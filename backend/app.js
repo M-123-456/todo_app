@@ -1,17 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
 
-import './src/config/config.js'
+import './src/db/db.js'
 
 
-// Connect to db
-try {
-    mongoose.connect(process.env.DB_URL)
-    console.log('Connecting to db...')
-} catch (err) {
-    console.log('Something went wrong with connecgtion to db')
-}
+
 
 const app = express()
 

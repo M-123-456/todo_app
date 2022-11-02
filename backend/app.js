@@ -1,10 +1,10 @@
 import express from 'express'
 import cors from 'cors'
+import 'express-async-errors'
 
 import './src/db/db.js'
-
-
-
+import authRoute from './src/routes/auth.js'
+import todolistRoute from './src/routes/todolist.js'
 
 const app = express()
 
@@ -18,7 +18,8 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 // Routes
-
+app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/todolist', todolistRoute)
 
 // 404 error handling
 app.use((req, res, next) => {

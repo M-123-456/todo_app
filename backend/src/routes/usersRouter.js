@@ -9,8 +9,8 @@ router.route('/:id')
     // Get user data by Id
     .get(controller.getUserById)
     // Update user data
-    .patch()
+    .patch(controller.updateUser)
     // Delete user
-    .delete()
+    .delete(controller.deleteUser)
 
 export default router

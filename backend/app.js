@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import 'express-async-errors'
+import httpErrors from 'http-errors'
 
 import './src/db/db.js'
 import authRoute from './src/routes/auth.js'
@@ -23,7 +24,7 @@ app.use('/api/v1/todolist', todolistRoute)
 
 // 404 error handling
 app.use((req, res, next) => {
-    res.status(404).json({ message: 'Not found' })
+    throw httpErrors.NotFound()
 })
 
 // General error handling

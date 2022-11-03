@@ -1,15 +1,15 @@
 import express from 'express'
 import 'express-async-errors'
 
-import { signup, login } from '../controllers/userController.js'
+import * as controller from '../controllers/userController.js'
 
 const router = express.Router()
 
 // Sign up
-router.post('/', )
+router.post('/signup', controller.signup)
 
 // Login
-
+router.post('/login', controller.login)
 
 
 export default router

@@ -5,11 +5,12 @@ import * as controller from '../controllers/userController.js'
 
 const router = express.Router()
 
-// Sign up
-router.post('/signup', controller.signup)
-
-// Login
-router.post('/login', controller.login)
-
+router.route('/:id')
+    // Get user data by Id
+    .get(controller.getUserById)
+    // Update user data
+    .patch()
+    // Delete user
+    .delete()
 
 export default router

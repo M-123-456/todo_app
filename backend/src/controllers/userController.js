@@ -1,20 +1,11 @@
 import User from '../models/User.js'
 import httpErrors from 'http-errors'
 
-export const signup = async (req, res) => {
-    const newUser = await new User(req.body)
-    newUser.save()
-    res.json(newUser)
-}
+/** @type {import("express").RequestHandler} */
+export const getUserById = async (req, res) => {
+    const userId = req.params.id
+    const user = await User.findById(userId).select('username todolists')
+    if(!user) httpErrors.NotFound()
 
-export const login = async (req, res) => {
-    const { username, password } = req.body
-    const user = await User.findOne({ username: username })
-    if(!user) throw httpErrors.NotFound()
-
-    if(user.password === password) {
-        res.status(200).json('successfully logged in')
-    } else {
-        throw httpErrors.Unauthorized()
-    }
+    res.status(200).send(user)
 }

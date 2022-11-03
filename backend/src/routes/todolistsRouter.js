@@ -13,10 +13,10 @@ router.route('/:listId')
     .get(controller.getTodolistById)
     .patch(controller.updateTodoList)
 
-router.route('/:listId/members')
-    .get(controller.getSharingMembers)
-    .patch(controller.addSharingMembers)
+router.get('/:listId/members', controller.getSharingMembers)
+// ? structure ?
+router.patch('/:listId/members/add', controller.addSharingMembers)
+router.patch('/:listId/members/delete', controller.deleteSharingMembers)
 
-router.delete('/:id/members/:memberId', )
 
 export default router

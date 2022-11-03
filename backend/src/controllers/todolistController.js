@@ -67,15 +67,14 @@ export const getSharingMembers = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const addSharingMembers = async (req, res) => {
     const id = req.params.listId
-    const members = req.body.members
+    const memberId = req.body.memberId
 
     const todolist = await Todolist.findById(id)
     if (!todolist) throw httpErrors.NotFound()
 
-    for (const member of members) {
-        if (!todolist.sharingMembers.includes(member)) {
-            todolist.sharingMembers.push(member)
-        }
+    // if the members are not in list yet, add
+    if (!todolist.sharingMembers.includes(memberId)) {
+        todolist.sharingMembers.push(memberId)
     }
 
     await todolist.save()
@@ -87,12 +86,13 @@ export const addSharingMembers = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const deleteSharingMembers = async (req, res) => {
     const id = req.params.listId
-    const memberId = req.params.memberId
+    const memberId = req.body.memberId
 
     const todolist = await Todolist.findById(id)
     if (!todolist) throw httpErrors.NotFound()
 
-    if (todolist.includes(memberId)) {
+    // if member are not in list yet, add
+    if (todolist.sharingMembers.includes(memberId)) {
         todolist.sharingMembers.pull(memberId)
     }
 

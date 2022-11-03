@@ -7,6 +7,8 @@ import './src/db/db.js'
 import authRoute from './src/routes/authRouter.js'
 import usersRoute from './src/routes/usersRouter.js'
 import todolistsRoute from './src/routes/todolistsRouter.js'
+import todoRoute from './src/routes/todoRouter.js'
+
 
 const app = express()
 
@@ -23,6 +25,7 @@ app.use(cors(corsOptions))
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/todolists', todolistsRoute)
+app.use('/api/v1/todos', todoRoute)
 
 
 // 404 error handling

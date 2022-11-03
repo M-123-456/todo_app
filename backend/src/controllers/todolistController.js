@@ -30,24 +30,32 @@ export const createTodolist = async (req, res) => {
 export const getTodolistById = async (req, res) => {
     const id = req.params.id
 
-    const todolist = await Todolist.findById(id)
+    const todolist = await Todolist.findById(id).populate('todos', '-_id -__v')
     if(!todolist) throw httpErrors.NotFound()
 
     res.status(200).send(todolist)
 }
 
-// Update todolist (icon, title, position)
+// Update todolist 
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
     const id = req.params.id
+    const members = req.body.sharingMembers
 
     const todolist = await Todolist.findById(id)
     if (!todolist) throw httpErrors.NotFound()
 
     for (const key in req.body) {
-        todolist[key] = req.body[key]
+        if(key !== 'sharingMembers') {
+            todolist[key] = req.body[key]
+        }
+        for (const member of req.body.sharingMembers) {
+            todolist.sharingMembers.push(member)
+        }
     }
     await todolist.save()
 
     res.status(200).send(todolist)
 }
+
+

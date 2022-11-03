@@ -3,9 +3,8 @@ import httpErrors from 'http-errors'
 
 /** @type {import("express").RequestHandler} */
 export const signup = async (req, res) => {
-    const newUser = await new User(req.body)
-    newUser.save()
-    res.json(newUser)
+    const newUser = await User.create(req.body)
+    res.status(201).json(newUser)
 }
 
 /** @type {import("express").RequestHandler} */

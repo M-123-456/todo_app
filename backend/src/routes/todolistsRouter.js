@@ -9,8 +9,14 @@ router.route('/')
     .get(controller.getAllTodolists)
     .post(controller.createTodolist)
 
-router.route('/:id')
+router.route('/:listId')
     .get(controller.getTodolistById)
     .patch(controller.updateTodoList)
+
+router.route('/:listId/members')
+    .get(controller.getSharingMembers)
+    .patch(controller.addSharingMembers)
+
+router.delete('/:id/members/:memberId', )
 
 export default router

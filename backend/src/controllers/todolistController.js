@@ -28,7 +28,7 @@ export const createTodolist = async (req, res) => {
 // Get todolist by id of todolist
 /** @type {import("express").RequestHandler} */
 export const getTodolistById = async (req, res) => {
-    const id = req.params.id
+    const id = req.params.listId
 
     const todolist = await Todolist.findById(id).populate('todos', '-_id -__v')
     if(!todolist) throw httpErrors.NotFound()
@@ -36,26 +36,69 @@ export const getTodolistById = async (req, res) => {
     res.status(200).send(todolist)
 }
 
-// Update todolist 
+// Update todolist (icon, title, position)
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
-    const id = req.params.id
-    const members = req.body.sharingMembers
+    const id = req.params.listId
 
     const todolist = await Todolist.findById(id)
     if (!todolist) throw httpErrors.NotFound()
 
     for (const key in req.body) {
-        if(key !== 'sharingMembers') {
-            todolist[key] = req.body[key]
-        }
-        for (const member of req.body.sharingMembers) {
-            todolist.sharingMembers.push(member)
-        }
+        todolist[key] = req.body[key]
     }
     await todolist.save()
 
     res.status(200).send(todolist)
+}
+
+// Get sharingMembers
+/** @type {import("express").RequestHandler} */
+export const getSharingMembers = async (req, res) => {
+    const id = req.params.listId
+
+    const todolist = await Todolist.findById(id)
+    if (!todolist) throw httpErrors.NotFound()
+   
+    res.status(200).send(todolist.sharingMembers)
+}
+
+// Add sharingMembers
+/** @type {import("express").RequestHandler} */
+export const addSharingMembers = async (req, res) => {
+    const id = req.params.listId
+    const members = req.body.members
+
+    const todolist = await Todolist.findById(id)
+    if (!todolist) throw httpErrors.NotFound()
+
+    for (const member of members) {
+        if (!todolist.sharingMembers.includes(member)) {
+            todolist.sharingMembers.push(member)
+        }
+    }
+
+    await todolist.save()
+
+    res.status(200).send(todolist.sharingMembers)
+}
+
+// Delete sharingMembers
+/** @type {import("express").RequestHandler} */
+export const deleteSharingMembers = async (req, res) => {
+    const id = req.params.listId
+    const memberId = req.params.memberId
+
+    const todolist = await Todolist.findById(id)
+    if (!todolist) throw httpErrors.NotFound()
+
+    if (todolist.includes(memberId)) {
+        todolist.sharingMembers.pull(memberId)
+    }
+
+    await todolist.save()
+
+    res.status(200).send(todolist.sharingMembers)   
 }
 
 

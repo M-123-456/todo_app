@@ -1,4 +1,5 @@
 import Todolist from "../models/Todolist.js"
+import User from '../models/User.js'
 import httpErrors from 'http-errors'
 
 // Get all todolists of the login user
@@ -13,15 +14,32 @@ export const getAllTodolists = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const createTodolist = async (req, res) => {
     const userId = req.body.user
+    
+    // create todo list
+    let newTodolist;
+    try {
+        // Get length of todolists of the user
+        const todolistCount = await Todolist.find({ user: userId }).count()
 
-    // Get length of todolists of the user
-    const todolistCount = await Todolist.find({ user: userId }).count()
+        newTodolist = await Todolist.create({
+            user: userId,
+            // position new todolist at the end
+            position: todolistCount > 0 ? todolistCount : 0
+        })
+    } catch (err) {
+        throw httpErrors.InternalServerError('Todolist could not be created. Please try later!')
+    }
 
-    const newTodolist = await Todolist.create({
-        user: userId,
-        // position new todolist at the end
-        position: todolistCount > 0 ? todolistCount : 0
-    })
+    // Add todolist to user
+    try {
+        const user = await User.findById(userId)
+        user.todolists.push(newTodolist)
+        await user.save()
+    } catch (err) {
+        await Todolist.deleteOne({ _id: newTodolist._id })
+        throw httpErrors.InternalServerError('Todolist could not be created. Please try later!')
+    }
+
     res.status(201).send(newTodolist)
 }
 

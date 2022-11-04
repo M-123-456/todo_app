@@ -1,7 +1,7 @@
 import express from 'express'
 import 'express-async-errors'
 
-import * as controller from '../controllers/userController.js'
+import * as controller from '../controllers/usersController.js'
 
 const router = express.Router()
 

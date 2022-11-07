@@ -206,7 +206,7 @@ export const deleteFriend = async (req, res) => {
             user.friends.pull(friendId)
             await user.save()
         } catch (err) {
-            throw httpErrors.InternalServerError('Could not add the user to friends')
+            throw httpErrors.InternalServerError('Could not delete the user from friends')
         }
     }
 
@@ -219,9 +219,9 @@ export const deleteFriend = async (req, res) => {
             // If error occurs, cancel STEP1 and send error
             user.friends.push(friendId)
             await user.save()
-            throw httpErrors.InternalServerError('Could not add the user to friends')
+            throw httpErrors.InternalServerError('Could not delete the user from friends')
         }
     }
 
-    res.status(200).send(user.friends)
+    res.status(200).json({ user: user.friends, friend: friend.friends })
 }

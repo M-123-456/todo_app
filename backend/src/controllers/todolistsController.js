@@ -14,7 +14,7 @@ export const getAllTodolists = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const createTodolist = async (req, res) => {
     const userId = req.body.user
-    
+
     // create todo list
     let newTodolist;
     try {
@@ -49,7 +49,7 @@ export const getTodolistById = async (req, res) => {
     const id = req.params.listId
 
     const todolist = await Todolist.findById(id).populate('todos', '-_id -__v')
-    if(!todolist) throw httpErrors.NotFound()
+    if (!todolist) throw httpErrors.NotFound()
 
     res.status(200).send(todolist)
 }
@@ -77,46 +77,80 @@ export const getSharingMembers = async (req, res) => {
 
     const todolist = await Todolist.findById(id)
     if (!todolist) throw httpErrors.NotFound()
-   
+
     res.status(200).send(todolist.sharingMembers)
 }
 
 // Add sharingMembers
 /** @type {import("express").RequestHandler} */
 export const addSharingMembers = async (req, res) => {
-    const id = req.params.listId
+    const listId = req.params.listId
     const memberId = req.body.memberId
 
-    const todolist = await Todolist.findById(id)
+    // Search for todolist and member by id and throw an error, if one of them cannot be found
+    const todolist = await Todolist.findById(listId)
     if (!todolist) throw httpErrors.NotFound()
 
-    // if the members are not in list yet, add
+    const member = await User.findById(memberId)
+    if (!member) throw httpErrors.NotFound('User cannot be found')
+
+    // Add member in sharingMembers, if the members are not in list yet
     if (!todolist.sharingMembers.includes(memberId)) {
-        todolist.sharingMembers.push(memberId)
+        try {
+            todolist.sharingMembers.push(memberId)
+            await todolist.save()
+        } catch (err) {
+            throw httpErrors.InternalServerError('Could not add the user to the sharing members of the todo list')
+        }
     }
 
-    await todolist.save()
+    // Add todolist to member
+    if (!member.todolists.includes(listId)) {
+        try {
+            member.todolists.push(listId)
+            await member.save()
+        } catch (err) {
+            throw httpErrors.InternalServerError('Could not share the todolist with the selected friend')
+        }
+    }
 
-    res.status(200).send(todolist.sharingMembers)
+    res.status(200).json(todolist.sharingMembers)
 }
 
 // Delete sharingMembers
 /** @type {import("express").RequestHandler} */
 export const deleteSharingMembers = async (req, res) => {
-    const id = req.params.listId
+    const listId = req.params.listId
     const memberId = req.body.memberId
 
-    const todolist = await Todolist.findById(id)
+    // Search for todolist and member by id and throw an error, if one of them cannot be found
+    const todolist = await Todolist.findById(listId)
     if (!todolist) throw httpErrors.NotFound()
 
-    // if member are not in list yet, add
+    const member = await User.findById(memberId)
+    if (!member) throw httpErrors.NotFound('User cannot be found')
+
+    // Remove member in sharingMembers, if the members are in list
     if (todolist.sharingMembers.includes(memberId)) {
-        todolist.sharingMembers.pull(memberId)
+        try {
+            todolist.sharingMembers.pull(memberId)
+            await todolist.save()
+        } catch (err) {
+            throw httpErrors.InternalServerError('Could not add the user to the sharing members of the todo list')
+        }
     }
 
-    await todolist.save()
+    // Remove todolist from member's todolist, if list exists in the members todolists
+    if (member.todolists.includes(listId)) {
+        try {
+            member.todolists.pull(listId)
+            await member.save()
+        } catch (err) {
+            throw httpErrors.InternalServerError('Could not share the todolist with the selected friend')
+        }
+    }
 
-    res.status(200).send(todolist.sharingMembers)   
+    res.status(200).json(todolist.sharingMembers)
 }
 
 

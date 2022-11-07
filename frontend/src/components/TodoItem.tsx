@@ -11,8 +11,8 @@ type Props = {
 const TodolistItem: React.FC<Props> = ({ todo, id, isComplete }) => {
   return (
     <li className="p-4 flex justify-between items-center">
-      <span className="text-lg">{todo}</span>
-      <span className="space-x-3 mr-2">
+      <span className=" text-lg">{todo}</span>
+      <span className="flex justify-end space-x-2 md:space-x-4  mr-2">
         <IconButton size="text-2xl" color="text-red-800">
           <BsTrash />
         </IconButton>

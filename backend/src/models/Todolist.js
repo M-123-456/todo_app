@@ -5,7 +5,10 @@ const todolistSchema = mongoose.Schema({
     icon: { type: String, default: '📝'},
     title: { type: String, default: 'My Todolist' },
     position: { type: Number },
-    todos: [{ type: mongoose.Types.ObjectId, ref: "Todo" }],
+    todos: [{
+        todo: { type: String },
+        isCompleted: { type: Boolean, default: false, required: true },
+    }],
     sharingMembers: [{ type: mongoose.Types.ObjectId, ref: 'User'}]
 })
 

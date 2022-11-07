@@ -7,17 +7,10 @@ type Props = {};
 const TodoLayout = (props: Props) => {
   const location = useLocation()
   
-  let currentLocation;
-  console.log(location.pathname)
-  if(location.pathname === '/') {
-    currentLocation = 'overview'
-  } else {
-    currentLocation = 'todolist'
-  }
   return (
     <BaseLayout>
       <div className="flex flex-col mx-auto w-4/5 min-h-screen bg-gray-100">
-        <ListHeader location={currentLocation} />
+        <ListHeader location={location.pathname} />
         <Outlet />
       </div>
     </BaseLayout>

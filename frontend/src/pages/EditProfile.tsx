@@ -1,6 +1,6 @@
 type Props = {};
 
-const Profile = (props: Props) => {
+const EditProfile = (props: Props) => {
   return (
     <div className="flex justify-center py-6 lg:py-0 w-full">
       {/* Profile Card */}
@@ -23,4 +23,4 @@ const Profile = (props: Props) => {
   );
 };
 
-export default Profile;
+export default EditProfile;

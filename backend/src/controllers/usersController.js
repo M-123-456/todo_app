@@ -77,7 +77,7 @@ export const sendFriendRequest = async (req, res) => {
         try {
             friend.receivedFriendRequests.push(userId)
             await friend.save()
-        } catch(err) {
+        } catch (err) {
             throw httpErrors.InternalServerError('Could not send friend request to the selected user')
         }
     }
@@ -106,7 +106,7 @@ export const cancelFriendRequest = async (req, res) => {
     const userId = req.params.id
     const friendId = req.body.friendId
 
-    const user = await User.findById(userId)
+    let user = await User.findById(userId)
     if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
@@ -118,24 +118,26 @@ export const cancelFriendRequest = async (req, res) => {
             friend.receivedFriendRequests.pull(userId)
             await friend.save()
         } catch (err) {
-            throw httpErrors.InternalServerError('Could not send friend request to the selected user')
+            throw httpErrors.InternalServerError('Could not cancel friend request to the selected user')
         }
     }
 
     // STEP2: Delete selected user to sentFriendRequests of user, if he/she exist
     if (user.sentFriendRequests.includes(friendId)) {
         try {
-            user.sentFriendRequests.pull(userId)
+            user.sentFriendRequests.pull(friendId)
             await user.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error
-            friend.receivedFriendRequests.pull(userId)
+            friend.receivedFriendRequests.push(userId)
             await friend.save()
-            throw httpErrors.InternalServerError('Could not send friend request to the selected user')
+            throw httpErrors.InternalServerError('Could not cancel friend request to the selected user')
         }
     }
 
-    res.status(200).send(user.sentFriendsRequests)
+    user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests')
+
+    res.status(200).send(user)
 }
 
 
@@ -187,7 +189,7 @@ export const addFriend = async (req, res) => {
         }
     }
 
-    res.status(200).json({user: user.friends, friend: friend.friends})
+    res.status(200).json({ user: user.friends, friend: friend.friends })
 }
 
 // Delete a friend

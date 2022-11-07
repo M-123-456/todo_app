@@ -18,8 +18,8 @@ export const userSignupValidationRules = () => {
         body('password')
             .isLength({ min: 6 })
             .withMessage('Password should have more than 8 letters'),
-        body('username').custom(name => {
-            return User.findOne({ username: name })
+        body('username').custom(async (name) => {
+            return await User.findOne({ username: name })
             .then(user => {
                 if(user) {
                     return Promise.reject('This user name exists already')
@@ -36,15 +36,7 @@ export const userLoginValidationRules = () => {
             .withMessage('User name should have more than 4 letters'),
         body('password')
             .isLength({ min: 6 })
-            .withMessage('Password should have more than 8 letters'),
-        body('username').custom(name => {
-            return User.findOne({ username: name })
-                .then(user => {
-                    if (!user) {
-                        return Promise.reject('This user does not exist. Please check your input or sign up')
-                    }
-                })
-        })
+            .withMessage('Password should have more than 8 letters')
     ]
 }
 

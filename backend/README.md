@@ -1,3 +1,4 @@
 - User friends
 - Todos
-- validation
+- hash password
+- token

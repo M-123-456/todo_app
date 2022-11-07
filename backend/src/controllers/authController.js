@@ -20,7 +20,4 @@ export const login = async (req, res) => {
     }
 }
 
-/** @type {import("express").RequestHandler} */
-export const getUserById = async (req, res) => {
-    
-}
+

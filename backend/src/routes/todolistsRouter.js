@@ -22,7 +22,6 @@ router.route('/:listId/todos')
 
 // Single todolist > sharedMembers
 router.get('/:listId/members', controller.getSharingMembers)
-// ? structure ?
 router.patch('/:listId/members/add', controller.addSharingMembers)
 router.patch('/:listId/members/delete', controller.deleteSharingMembers)
 

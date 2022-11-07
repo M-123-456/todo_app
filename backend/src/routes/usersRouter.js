@@ -13,4 +13,20 @@ router.route('/:id')
     // Delete user
     .delete(controller.deleteUser)
 
+// Get all friends
+router.get('/:id/friends', controller.getAllFriends)
+// Add friend
+router.patch('/:id/friends/add', controller.addFriend)
+// Delete friend
+router.patch('/:id/friends/delete')
+
+// Get all friend requests
+router.get('/:id/friends/requests', )
+// Send friend request
+router.patch('/:id/friends/requests/add')
+// Cancel friend request
+router.patch('/:id/friends/requests/delete')
+
+
+
 export default router

@@ -18,7 +18,7 @@ router.get('/:id/friends', controller.getAllFriends)
 // Add friend
 router.patch('/:id/friends/add', controller.addFriend)
 // Delete friend
-router.patch('/:id/friends/delete')
+router.patch('/:id/friends/delete', controller.deleteFriend)
 
 // Get all friend requests
 router.get('/:id/friends/requests', )

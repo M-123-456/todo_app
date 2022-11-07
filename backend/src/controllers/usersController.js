@@ -7,7 +7,7 @@ import httpErrors from 'http-errors'
 export const getUserById = async (req, res) => {
     const userId = req.params.id
     const user = await User.findById(userId).select('username todolists')
-    if(!user) return httpErrors.NotFound()
+    if (!user) return httpErrors.NotFound()
     res.status(200).send(user)
 }
 
@@ -53,9 +53,9 @@ export const deleteUser = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const getAllFriends = async (req, res) => {
     const userId = req.params.id
-    
+
     const user = await User.findById(userId).select('-_id friends')
-    if(!user) return httpErrors.NotFound()
+    if (!user) return httpErrors.NotFound()
 
     res.status(200).send(user.friends)
 }
@@ -72,7 +72,30 @@ export const addFriend = async (req, res) => {
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound()
 
-    user.friends.push(friendId)
+    if (!user.friends.includes(friendId)) {
+        user.friends.push(friendId)
+        await user.save()
+    }
+
+    res.status(200).send(user.friends)
+}
+
+// Delete a friend
+/** @type {import("express").RequestHandler} */
+export const deleteFriend = async (req, res) => {
+    const userId = req.params.id
+    const friendId = req.body.friendId
+
+    const user = await User.findById(userId)
+    if (!user) return httpErrors.NotFound()
+
+    const friend = await User.findById(friendId)
+    if (!friend) return httpErrors.NotFound()
+
+    if (user.friends.includes(friendId)) {
+        user.friends.pull(friendId)
+        await user.save()
+    }
 
     res.status(200).send(user.friends)
 }

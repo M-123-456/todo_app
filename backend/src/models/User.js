@@ -6,7 +6,8 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: true },
     todolists: [{ type: mongoose.Types.ObjectId, ref: 'Todolists' }],
     friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-    friendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }]
+    sentFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    receivedFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }]
 })
 
 const User = mongoose.model('User', userSchema)

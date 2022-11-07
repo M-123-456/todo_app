@@ -66,7 +66,7 @@ export const sendFriendRequest = async (req, res) => {
     const userId = req.params.id
     const friendId = req.body.friendId
 
-    const user = await User.findById(userId)
+    let user = await User.findById(userId)
     if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
@@ -85,7 +85,7 @@ export const sendFriendRequest = async (req, res) => {
     // STEP2: Add selected user to sentFriendRequests of user, if he/she doesn't exist yet
     if (!user.sentFriendRequests.includes(friendId)) {
         try {
-            user.sentFriendRequests.push(userId)
+            user.sentFriendRequests.push(friendId)
             await user.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error
@@ -95,7 +95,9 @@ export const sendFriendRequest = async (req, res) => {
         }
     }
 
-    res.status(200).send(user.sentFriendsRequests)
+    user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests')
+
+    res.status(200).send(user)
 }
 
 // Cancel friend request

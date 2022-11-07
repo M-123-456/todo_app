@@ -21,11 +21,11 @@ router.patch('/:id/friends/add', controller.addFriend)
 router.patch('/:id/friends/delete', controller.deleteFriend)
 
 // Get all friend requests
-router.get('/:id/friends/requests', )
+router.get('/:id/friends/requests', controller.getAllFriendRequests)
 // Send friend request
-router.patch('/:id/friends/requests/add')
+router.patch('/:id/friends/requests/add', controller.sendFriendRequest)
 // Cancel friend request
-router.patch('/:id/friends/requests/delete')
+router.patch('/:id/friends/requests/delete', controller.cancelFriendRequest)
 
 
 

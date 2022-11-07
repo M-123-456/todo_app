@@ -57,7 +57,7 @@ export const getAllFriendRequests = async (req, res) => {
     const user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests').populate('sentFriendRequests').populate('receivedFriendRequests')
     if (!user) return httpErrors.NotFound()
 
-    res.status(200).send(user.friendRequests)
+    res.status(200).send(user)
 }
 
 // Send friend request

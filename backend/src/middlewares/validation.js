@@ -1,4 +1,5 @@
 import { validationResult } from 'express-validator'
+import httpErrors from 'http-errors'
 
 export const validateInputs = (rules) => {
     return [
@@ -6,7 +7,8 @@ export const validateInputs = (rules) => {
         (req, res, next) => {
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() })
+                const formattedErrors = errors.array().map(error => { return { [error.param]: error.msg } })
+                throw httpErrors.BadRequest(formattedErrors)
             }
             next()
         }

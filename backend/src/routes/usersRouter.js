@@ -16,7 +16,6 @@ router.patch(
     controller.updateProfile
 )
 router.patch('/:id/change-password', auth, validatePassword, controller.changePassword)
-router.delete('/:id/delete', auth, controller.deleteFriend)
 
 // FRIENDS //
 router.get('/:id/friends', auth, controller.getAllFriends)

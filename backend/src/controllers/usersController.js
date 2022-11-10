@@ -34,14 +34,6 @@ export const changePassword = async (req, res) => {
     res.status(200).send(user)
 }
 
-//todo 
-/** @type {import("express").RequestHandler} */
-export const deleteUser = async (req, res) => {
-    const user = req.user
-
-
-    res.status(200).send("Successfully deleted")
-}
 
 // FRIENDS REQUEST
 

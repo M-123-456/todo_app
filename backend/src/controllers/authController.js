@@ -1,23 +1,31 @@
-import User from '../models/User.js'
 import httpErrors from 'http-errors'
+import bcrypt from 'bcrypt'
+
+import User from '../models/User.js'
 
 /** @type {import("express").RequestHandler} */
 export const signup = async (req, res) => {
-    const newUser = await User.create(req.body)
-    res.status(201).json(newUser)
+    const user = await new User(req.body)
+    await user.generateToken()
+    await user.save()
+    res.status(201).json(user)
 }
 
 /** @type {import("express").RequestHandler} */
 export const login = async (req, res) => {
     const { username, password } = req.body
-    const user = await User.findOne({ username: username })
-    if(!user) throw httpErrors.NotFound()
+    const user = await User.findByName(username)
 
-    if(user.password === password) {
-        res.status(200).json('successfully logged in')
-    } else {
-        throw httpErrors.Unauthorized()
-    }
+    if (!user) throw httpErrors.Unauthorized()
+
+    const correctPassword = await bcrypt.compare(password, user.password)
+
+    if (!correctPassword) throw httpErrors.Unauthorized()
+
+    await user.generateToken()
+    await user.save()
+
+    res.status(200).send(user.token)
 }
 
 

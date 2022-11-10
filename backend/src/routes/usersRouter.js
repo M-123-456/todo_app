@@ -2,31 +2,30 @@ import express from 'express'
 import 'express-async-errors'
 
 import * as controller from '../controllers/usersController.js'
+import auth from '../lib/middlewares/auth.js'
+import { validatePassword } from '../lib/middlewares/validation.js'
+import * as validations from '../lib/validations/userRules.js'
 
 const router = express.Router()
 
-router.route('/:id')
-    // Get user data by Id
-    .get(controller.getUserById)
-    // Update user data
-    .patch(controller.updateUser)
-    // Delete user
-    .delete(controller.deleteUser)
+router.get('/:id', auth, controller.getUser)
+router.patch(
+    '/:id/change-profile', 
+    auth, 
+    validations.updateProfile, 
+    controller.updateProfile
+)
+router.post('/:id/change-password', auth, validatePassword)
+router.delete('/:id/delete', auth, controller.deleteFriend)
 
-// Get all friends
-router.get('/:id/friends', controller.getAllFriends)
-// Add friend
-router.patch('/:id/friends/add', controller.addFriend)
-// Delete friend
-router.patch('/:id/friends/delete', controller.deleteFriend)
+// FRIENDS //
+router.get('/:id/friends', auth, controller.getAllFriends)
+router.patch('/:id/friends/add', auth, controller.addFriend)
+router.patch('/:id/friends/delete', auth, controller.deleteFriend)
 
-// Get all friend requests
-router.get('/:id/friends/requests', controller.getAllFriendRequests)
-// Send friend request
-router.patch('/:id/friends/requests/add', controller.sendFriendRequest)
-// Cancel friend request
-router.patch('/:id/friends/requests/delete', controller.cancelFriendRequest)
-
-
+// FRIEND REQUESTS //
+router.get('/:id/friend-requests', auth, controller.getAllFriendRequests)
+router.patch('/:id/friend-requests/send', auth, controller.sendFriendRequest)
+router.patch('/:id/friends-requests/cancel', auth, controller.cancelFriendRequest)
 
 export default router

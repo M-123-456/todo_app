@@ -13,6 +13,16 @@ const Schema = mongoose.Schema({
     token: String
 })
 
+// hash password before saving, if password is modified
+Schema.pre('save', async function (next) {
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 10)
+    }
+    next()
+})
+
+// define response data
 Schema.methods.toJSON = function () {
     const user = this
     const result = {
@@ -26,21 +36,19 @@ Schema.methods.toJSON = function () {
     return result
 }
 
+Schema.methods.generateToken = function () {
+    const user = this
+    user.token = Math.random().toString(36).slice(2, 7)
+}
+
 Schema.statics.findByName = async function(username) {
     return await User.findOne().where('username').equals(username)
 }
 
-Schema.pre('save', async function() {
-    const user = this
-    if(user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 10)
-    }
-})
-
-Schema.methods.generateToken = function() {
-    const user = this
-    user.token = Math.random().toString(36).slice(2, 7)
+Schema.statics.findByToken = async function(token) {
+    return await User.findOne().where('token').equals(token)
 }
+
 
 const User = mongoose.model('User', Schema)
 

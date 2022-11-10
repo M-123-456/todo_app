@@ -28,4 +28,16 @@ export const login = async (req, res) => {
     res.status(200).send(user.token)
 }
 
+/** @type {import("express").RequestHandler} */
+export const logout = async (req, res) => {
+    const user = req.user
+
+    user.token = undefined
+
+    await user.save()
+
+    res.status(204)
+}
+
+
 

@@ -1,24 +1,23 @@
 import express from 'express'
 import 'express-async-errors'
+import auth from '../lib/middlewares/auth.js'
 import * as validations from '../lib/validations/authRules.js'
-
 import * as controller from '../controllers/authController.js'
 
 const router = express.Router()
 
-// Sign up
 router.post(
     '/signup', 
     ...validations.signup, 
     controller.signup
 )
 
-// Login
 router.post(
     '/login', 
     ...validations.login, 
     controller.login
 )
 
+router.post('/logout', auth, controller.logout)
 
 export default router

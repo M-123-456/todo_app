@@ -34,14 +34,11 @@ export const changePassword = async (req, res) => {
     res.status(200).send(user)
 }
 
+//todo 
 /** @type {import("express").RequestHandler} */
 export const deleteUser = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
 
-    const user = await User.findById(userId)
-    if (!user) return httpErrors.NotFound()
-
-    await User.deleteOne({ _id: userId })
 
     res.status(200).send("Successfully deleted")
 }

@@ -14,13 +14,20 @@ export const updateProfile = async (req, res) => {
     const user = req.user
     const { username, avatar } = req.body
 
-    if (!user) return httpErrors.NotFound()
-
     if (username) user.username = username
 
     if (avatar) user.avatar = avatar
 
-    console.log(user)
+    await user.save()
+
+    res.status(200).send(user)
+}
+
+/** @type {import("express").RequestHandler} */
+export const changePassword = async (req, res) => {
+    const user = req.user
+
+    user.password = req.body.newPassword
 
     await user.save()
 

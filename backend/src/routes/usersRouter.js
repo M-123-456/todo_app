@@ -10,12 +10,12 @@ const router = express.Router()
 
 router.get('/:id', auth, controller.getUser)
 router.patch(
-    '/:id/change-profile', 
-    auth, 
-    validations.updateProfile, 
+    '/:id/change-profile',
+    auth,
+    validations.updateProfile,
     controller.updateProfile
 )
-router.post('/:id/change-password', auth, validatePassword)
+router.patch('/:id/change-password', auth, validatePassword, controller.changePassword)
 router.delete('/:id/delete', auth, controller.deleteFriend)
 
 // FRIENDS //

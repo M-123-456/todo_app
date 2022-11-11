@@ -55,70 +55,63 @@ export const deleteAccount = async (req, res) => {
 // Get all friend requests
 /** @type {import("express").RequestHandler} */
 export const getAllFriendRequests = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
 
-    const user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests').populate('sentFriendRequests').populate('receivedFriendRequests')
-    if (!user) return httpErrors.NotFound()
+    const userFriendRequests = await User.findById(user._id).populate('sentFriendRequests').populate('receivedFriendRequests').select('-_id sentFriendRequests receivedFriendRequests')
 
-    res.status(200).send(user)
+    res.status(200).send(userFriendRequests)
 }
 
 // Send friend request
 /** @type {import("express").RequestHandler} */
 export const sendFriendRequest = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
     const friendId = req.body.friendId
-
-    let user = await User.findById(userId)
-    if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound()
 
-    // STEP1: Add user to receivedFriendRequests of selected user, if he/she doesn't exist yet
-    if (!friend.receivedFriendRequests.includes(userId)) {
+    // STEP1: Add user to receivedFriendRequests of selected user
+    if (!friend.receivedFriendRequests.includes(user._id) && !friend.friends.includes(user._id)) {
         try {
-            friend.receivedFriendRequests.push(userId)
+            friend.receivedFriendRequests.push(user._id)
             await friend.save()
         } catch (err) {
             throw httpErrors.InternalServerError('Could not send friend request to the selected user')
         }
     }
 
-    // STEP2: Add selected user to sentFriendRequests of user, if he/she doesn't exist yet
-    if (!user.sentFriendRequests.includes(friendId)) {
+    // STEP2: Add selected user to sentFriendRequests of user
+    if (!user.sentFriendRequests.includes(friendId) && !user.friends.includes(friendId)) {
         try {
             user.sentFriendRequests.push(friendId)
             await user.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error
-            friend.receivedFriendRequests.pull(userId)
+            friend.receivedFriendRequests.pull(user._id)
             await friend.save()
             throw httpErrors.InternalServerError('Could not send friend request to the selected user')
         }
     }
 
-    user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests')
+    const friendRequests = await User.findById(user._id).select('-_id sentFriendRequests receivedFriendRequests')
 
-    res.status(200).send(user)
+    res.status(200).send(friendRequests)
 }
 
 // Cancel friend request
 /** @type {import("express").RequestHandler} */
 export const cancelFriendRequest = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
     const friendId = req.body.friendId
-
-    let user = await User.findById(userId)
-    if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound()
 
     // STEP1: Delete user to receivedFriendRequests of selected user, if he/she exist
-    if (friend.receivedFriendRequests.includes(userId)) {
+    if (friend.receivedFriendRequests.includes(user._id)) {
         try {
-            friend.receivedFriendRequests.pull(userId)
+            friend.receivedFriendRequests.pull(user._id)
             await friend.save()
         } catch (err) {
             throw httpErrors.InternalServerError('Could not cancel friend request to the selected user')
@@ -132,15 +125,15 @@ export const cancelFriendRequest = async (req, res) => {
             await user.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error
-            friend.receivedFriendRequests.push(userId)
+            friend.receivedFriendRequests.push(user._id)
             await friend.save()
             throw httpErrors.InternalServerError('Could not cancel friend request to the selected user')
         }
     }
 
-    user = await User.findById(userId).select('-_id sentFriendRequests receivedFriendRequests')
+    const friendRequests = await User.findById(user._id).select('-_id sentFriendRequests receivedFriendRequests')
 
-    res.status(200).send(user)
+    res.status(200).send(friendRequests)
 }
 
 
@@ -153,7 +146,7 @@ export const getAllFriends = async (req, res) => {
     // ? populate like this?
     const userFriendsPopulated = await User.findById(user._id).select('-_id friends').populate('friends')
 
-    res.status(200).send(user.friends)
+    res.status(200).send(userFriendsPopulated)
 }
 
 /** @type {import("express").RequestHandler} */

@@ -27,12 +27,12 @@ router.delete('/:id/delete', auth, controller.deleteAccount)
 
 // FRIENDS //
 router.get('/:id/friends', auth, controller.getAllFriends)
-router.patch('/:id/friends/add', auth, controller.addFriend)
-router.patch('/:id/friends/delete', auth, controller.deleteFriend)
+router.patch('/:id/add-friend', auth, controller.addFriend)
+router.patch('/:id/delete-friend', auth, controller.deleteFriend)
 
 // FRIEND REQUESTS //
 router.get('/:id/friend-requests', auth, controller.getAllFriendRequests)
-router.patch('/:id/friend-requests/send', auth, controller.sendFriendRequest)
-router.patch('/:id/friends-requests/cancel', auth, controller.cancelFriendRequest)
+router.patch('/:id/send-friend-request', auth, controller.sendFriendRequest)
+router.patch('/:id/cancel-friend-request', auth, controller.cancelFriendRequest)
 
 export default router

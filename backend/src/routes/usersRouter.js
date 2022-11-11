@@ -9,13 +9,23 @@ import * as validations from '../lib/validations/userRules.js'
 const router = express.Router()
 
 router.get('/:id', auth, controller.getUser)
+
 router.patch(
-    '/:id/change-profile',
+    '/:id/update-profile',
     auth,
     validations.updateProfile,
     controller.updateProfile
 )
-router.patch('/:id/change-password', auth, validatePassword, controller.changePassword)
+
+router.patch(
+    '/:id/change-password', 
+    auth, 
+    validations.changePassword, 
+    controller.changePassword
+)
+
+
+router.delete('/:id/delete', auth, controller.deleteAccount)
 
 // FRIENDS //
 router.get('/:id/friends', auth, controller.getAllFriends)

@@ -12,6 +12,4 @@ router.post('/login', ...validations.login, controller.login)
 
 router.post('/logout', auth, controller.logout)
 
-router.delete('/delete', auth, controller.deleteAccount)
-
 export default router

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 const Schema = mongoose.Schema({
     username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     avatar: { type: String },
     password: { type: String, required: true },
     todolists: [{ type: mongoose.Types.ObjectId, ref: 'Todolists' }],
@@ -27,6 +28,7 @@ Schema.methods.toJSON = function () {
     const user = this
     const result = {
         username: user.username,
+        email: user.email,
         avatar: user.avatar,
         todolists: user.todolists,
         friends: user.friends,
@@ -43,6 +45,10 @@ Schema.methods.generateToken = function () {
 
 Schema.statics.findByName = async function(username) {
     return await User.findOne().where('username').equals(username)
+}
+
+Schema.statics.findByEmail = async function (email) {
+    return await User.findOne().where('email').equals(email)
 }
 
 Schema.statics.findByToken = async function(token) {

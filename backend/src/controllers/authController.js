@@ -13,8 +13,8 @@ export const signup = async (req, res) => {
 
 /** @type {import("express").RequestHandler} */
 export const login = async (req, res) => {
-    const { username, password } = req.body
-    const user = await User.findByName(username)
+    const { email, password } = req.body
+    const user = await User.findByEmail(email)
 
     if (!user) throw httpErrors.Unauthorized()
 
@@ -31,22 +31,14 @@ export const login = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const logout = async (req, res) => {
     const user = req.user
-
+    
     user.token = undefined
 
     await user.save()
 
-    res.status(204)
+    res.status(204).send()
 }
 
-//todo 
-/** @type {import("express").RequestHandler} */
-export const deleteAccount = async (req, res) => {
-    const user = req.user
-
-
-    res.status(200).send("Successfully deleted")
-}
 
 
 

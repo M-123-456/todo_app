@@ -2,7 +2,6 @@ import User from '../models/User.js'
 import httpErrors from 'http-errors'
 
 
-// Get user data (Accessible for all user)
 /** @type {import("express").RequestHandler} */
 export const getUser = async (req, res) => {
     const user = req.user
@@ -13,6 +12,12 @@ export const getUser = async (req, res) => {
 export const updateProfile = async (req, res) => {
     const user = req.user
     const { username, avatar } = req.body
+
+    const foundUser = await User.findByName(username)
+
+    if (foundUser && foundUser.email !== user.email) {
+        throw httpErrors.Unauthorized('User with the name exists already')
+    }
 
     if (username) user.username = username
 
@@ -33,6 +38,16 @@ export const changePassword = async (req, res) => {
 
     res.status(200).send(user)
 }
+
+/** @type {import("express").RequestHandler} */
+export const deleteAccount = async (req, res) => {
+    const user = req.user
+
+    await User.deleteOne().where('_id').equals(user._id)
+
+    res.status(202).send("Successfully deleted")
+}
+
 
 
 // FRIENDS REQUEST

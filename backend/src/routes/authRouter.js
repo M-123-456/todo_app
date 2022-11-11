@@ -10,6 +10,7 @@ router.post('/signup', ...validations.signup, controller.signup)
 
 router.post('/login', ...validations.login, controller.login)
 
+// userRouter?
 router.post('/logout', auth, controller.logout)
 
 export default router

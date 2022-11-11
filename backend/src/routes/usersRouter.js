@@ -3,7 +3,6 @@ import 'express-async-errors'
 
 import * as controller from '../controllers/usersController.js'
 import auth from '../lib/middlewares/auth.js'
-import { validatePassword } from '../lib/middlewares/validation.js'
 import * as validations from '../lib/validations/userRules.js'
 
 const router = express.Router()
@@ -23,7 +22,6 @@ router.patch(
     validations.changePassword, 
     controller.changePassword
 )
-
 
 router.delete('/:id/delete', auth, controller.deleteAccount)
 

@@ -15,3 +15,7 @@ export const changePassword = [
     validate,
     validatePassword
 ]
+
+export const addFriends = [
+    body('friendId').isString()
+]

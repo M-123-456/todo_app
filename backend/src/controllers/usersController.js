@@ -146,25 +146,20 @@ export const cancelFriendRequest = async (req, res) => {
 
 // FRIENDS
 
-// Get all friends
 /** @type {import("express").RequestHandler} */
 export const getAllFriends = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
 
-    const user = await User.findById(userId).select('-_id friends').populate('friends')
-    if (!user) return httpErrors.NotFound()
+    // ? populate like this?
+    const userFriendsPopulated = await User.findById(user._id).select('-_id friends').populate('friends')
 
     res.status(200).send(user.friends)
 }
 
-// Add a friend
 /** @type {import("express").RequestHandler} */
 export const addFriend = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
     const friendId = req.body.friendId
-
-    const user = await User.findById(userId)
-    if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound()
@@ -180,9 +175,9 @@ export const addFriend = async (req, res) => {
     }
 
     // STEP2: Add user to friend's friends, if he/she doesn't exist yet
-    if (!friend.friends.includes(userId)) {
+    if (!friend.friends.includes(user._id)) {
         try {
-            friend.friends.push(userId)
+            friend.friends.push(user._id)
             await friend.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error
@@ -198,11 +193,8 @@ export const addFriend = async (req, res) => {
 // Delete a friend
 /** @type {import("express").RequestHandler} */
 export const deleteFriend = async (req, res) => {
-    const userId = req.params.id
+    const user = req.user
     const friendId = req.body.friendId
-
-    const user = await User.findById(userId)
-    if (!user) return httpErrors.NotFound()
 
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound()
@@ -218,9 +210,9 @@ export const deleteFriend = async (req, res) => {
     }
 
     // STEP2: Add user to friend's friends, if he/she exists
-    if (friend.friends.includes(userId)) {
+    if (friend.friends.includes(user._id)) {
         try {
-            friend.friends.pull(userId)
+            friend.friends.pull(user._id)
             await friend.save()
         } catch (err) {
             // If error occurs, cancel STEP1 and send error

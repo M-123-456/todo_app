@@ -52,17 +52,25 @@ export const deleteAccount = async (req, res) => {
 
 // FRIENDS REQUEST
 
-// Get all friend requests
+//!
 /** @type {import("express").RequestHandler} */
-export const getAllFriendRequests = async (req, res) => {
-    const user = req.user
+export const getSentFriendRequests = async (req, res) => {
+    let user = req.user
 
-    const userFriendRequests = await User.findById(user._id).populate('sentFriendRequests').populate('receivedFriendRequests').select('-_id sentFriendRequests receivedFriendRequests')
+    // user = user.populate('sentFriendRequests')
 
-    res.status(200).send(userFriendRequests)
+    res.status(200).send(user)
 }
 
-// Send friend request
+/** @type {import("express").RequestHandler} */
+export const getReceivedFriendRequests = async (req, res) => {
+    let user = req.user
+
+    user = user.populate('receivedFriendRequests')
+
+    res.status(200).send(user.receivedFriendRequests)
+}
+
 /** @type {import("express").RequestHandler} */
 export const sendFriendRequest = async (req, res) => {
     const user = req.user
@@ -143,8 +151,10 @@ export const cancelFriendRequest = async (req, res) => {
 export const getAllFriends = async (req, res) => {
     const user = req.user
 
+    await user.populate('friends')
+
     // ? populate like this?
-    const userFriendsPopulated = await User.findById(user._id).select('-_id friends').populate('friends')
+    const userFriendsPopulated = await user.populate('friends')
 
     res.status(200).send(userFriendsPopulated)
 }

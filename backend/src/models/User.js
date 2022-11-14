@@ -40,7 +40,7 @@ Schema.methods.toJSON = function () {
 
 Schema.methods.generateToken = function () {
     const user = this
-    user.token = Math.random().toString(36).slice(2, 7)
+    user.token = jwt.sign({_id: user._id}, process.env.SECRET_KEY, {expiresIn: '1h'})
 }
 
 Schema.statics.findByName = async function(username) {
@@ -55,6 +55,7 @@ Schema.statics.findByToken = async function(token) {
     return await User.findOne().where('token').equals(token)
 }
 
+// Schema.statics.
 
 const User = mongoose.model('User', Schema)
 

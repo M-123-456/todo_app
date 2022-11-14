@@ -4,7 +4,7 @@ import 'express-async-errors'
 import httpErrors from 'http-errors'
 
 import './src/db/db.js'
-import authRoute from './src/routes/authRouter.js'
+import accountRoute from './src/routes/accountRouter.js'
 import usersRoute from './src/routes/usersRouter.js'
 import todolistsRoute from './src/routes/todolistsRouter.js'
 
@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 // Routes
-app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/account', accountRoute)
 app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/todolists', todolistsRoute)
 

@@ -7,9 +7,10 @@ import httpErrors from 'http-errors'
 export const getAllTodolists = async (req, res) => {
     let user = req.user
     
+    //! 
     user = await user.populate('todolists')
 
-    res.status(200).send(user)
+    res.status(200).send(user.todolists)
 }
 
 // Create a new todolist of the login user
@@ -21,7 +22,7 @@ export const createTodolist = async (req, res) => {
     let newTodolist;
     try {
         // Get length of todolists of the user
-        const todolistCount = await Todolist.find({ user: user._id }).count()
+        const todolistCount = await Todolist.findOne().where('user').equals(user._id).count()
 
         newTodolist = await Todolist.create({
             user: user._id,

@@ -12,6 +12,6 @@ const Schema = mongoose.Schema({
     sharingMembers: [{ type: mongoose.Types.ObjectId, ref: 'User'}]
 })
 
-const Todolist = mongoose.model('Todolist', Schema)
+const Todolist = mongoose.model('Todolist', Schema, 'todolists')
 
 export default Todolist

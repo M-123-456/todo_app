@@ -7,7 +7,7 @@ const Schema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
     avatar: { type: String },
     password: { type: String, required: true },
-    todolists: [{ type: mongoose.Types.ObjectId, ref: 'Todolists' }],
+    todolists: [{ type: mongoose.Types.ObjectId, ref: 'Todolist' }],
     friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     sentFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     receivedFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
@@ -57,6 +57,6 @@ Schema.statics.findByToken = function (token) {
     return User.findById(verified._id).where('token').equals(token)
 }
 
-const User = mongoose.model('User', Schema)
+const User = mongoose.model('User', Schema, 'users')
 
 export default User

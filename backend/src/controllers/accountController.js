@@ -39,6 +39,14 @@ export const logout = async (req, res) => {
     res.status(204).send()
 }
 
+/** @type {import("express").RequestHandler} */
+export const deleteAccount = async (req, res) => {
+    const user = req.user
+
+    await User.deleteOne().where('_id').equals(user._id)
+
+    res.status(202).send("Successfully deleted")
+}
 
 
 

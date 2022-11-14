@@ -1,29 +1,25 @@
 import express from 'express'
 import 'express-async-errors'
 
+import auth from '../lib/middlewares/auth.js'
 import * as controller from '../controllers/todolistsController.js'
 
 const router = express.Router()
 
 // All todolists
 router.route('/')
-    .get(controller.getAllTodolists)
-    .post(controller.createTodolist)
+    .get(auth, controller.getAllTodolists)
+    .post(auth, controller.createTodolist)
 
 // Single todolist
 router.route('/:listId')
-    .get(controller.getTodolistById)
-    .patch(controller.updateTodoList)
+    .get(auth, controller.getTodolistById)
+    .patch(auth, controller.updateTodoList)
 
-// Single todolist > todos
-router.route('/:listId/todos')
-    .get()
-    .patch()
 
 // Single todolist > sharedMembers
-router.get('/:listId/members', controller.getSharingMembers)
-router.patch('/:listId/members/add', controller.addSharingMembers)
-router.patch('/:listId/members/delete', controller.deleteSharingMembers)
-
+router.get('/:listId/members', auth, controller.getSharingMembers)
+router.patch('/:listId/add-members',auth, controller.addSharingMembers)
+router.patch('/:listId/delete-members',auth, controller.deleteSharingMembers)
 
 export default router

@@ -5,24 +5,26 @@ import httpErrors from 'http-errors'
 // Get all todolists of the login user
 /** @type {import("express").RequestHandler} */
 export const getAllTodolists = async (req, res) => {
-    const userId = req.body.user
-    const todolists = await Todolist.find({ user: userId })
-    res.status(200).send(todolists)
+    let user = req.user
+    
+    user = await user.populate('todolists')
+
+    res.status(200).send(user)
 }
 
 // Create a new todolist of the login user
 /** @type {import("express").RequestHandler} */
 export const createTodolist = async (req, res) => {
-    const userId = req.body.user
+    const user = req.user
 
-    // create todo list
+    // create new todolist
     let newTodolist;
     try {
         // Get length of todolists of the user
-        const todolistCount = await Todolist.find({ user: userId }).count()
+        const todolistCount = await Todolist.find({ user: user._id }).count()
 
         newTodolist = await Todolist.create({
-            user: userId,
+            user: user._id,
             // position new todolist at the end
             position: todolistCount > 0 ? todolistCount : 0
         })
@@ -32,7 +34,6 @@ export const createTodolist = async (req, res) => {
 
     // Add todolist to user
     try {
-        const user = await User.findById(userId)
         user.todolists.push(newTodolist)
         await user.save()
     } catch (err) {

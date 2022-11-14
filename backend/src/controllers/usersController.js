@@ -52,21 +52,20 @@ export const deleteAccount = async (req, res) => {
 
 // FRIENDS REQUEST
 
-//!
 /** @type {import("express").RequestHandler} */
 export const getSentFriendRequests = async (req, res) => {
     let user = req.user
 
-    // user = user.populate('sentFriendRequests')
+    user = await user.populate('sentFriendRequests')
 
-    res.status(200).send(user)
+    res.status(200).send(user.sentFriendRequests)
 }
 
 /** @type {import("express").RequestHandler} */
 export const getReceivedFriendRequests = async (req, res) => {
     let user = req.user
 
-    user = user.populate('receivedFriendRequests')
+    user = await user.populate('receivedFriendRequests')
 
     res.status(200).send(user.receivedFriendRequests)
 }

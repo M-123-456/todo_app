@@ -1,5 +1,4 @@
 import { body } from 'express-validator'
-import User from '../../models/User.js'
 import validate, { validatePassword } from '../middlewares/validation.js'
 
 export const updateProfile = [

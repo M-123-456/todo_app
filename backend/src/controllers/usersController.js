@@ -65,9 +65,9 @@ export const sendFriendRequest = async (req, res) => {
     const friendId = req.body.friendId
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound()
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
 
-    // STEP1: Add user to receivedFriendRequests of selected user
+    // STEP1: Add user to receivedFriendRequests of friend
     if (!friend.receivedFriendRequests.includes(user._id) && !friend.friends.includes(user._id)) {
         try {
             friend.receivedFriendRequests.push(user._id)
@@ -77,7 +77,7 @@ export const sendFriendRequest = async (req, res) => {
         }
     }
 
-    // STEP2: Add selected user to sentFriendRequests of user
+    // STEP2: Add friend to sentFriendRequests of user
     if (!user.sentFriendRequests.includes(friendId) && !user.friends.includes(friendId)) {
         try {
             user.sentFriendRequests.push(friendId)
@@ -90,21 +90,18 @@ export const sendFriendRequest = async (req, res) => {
         }
     }
 
-    const friendRequests = await User.findById(user._id).select('-_id sentFriendRequests receivedFriendRequests')
-
-    res.status(200).send(friendRequests)
+    res.status(200).send(user.sentFriendRequests)
 }
 
-// Cancel friend request
 /** @type {import("express").RequestHandler} */
 export const cancelFriendRequest = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound()
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
 
-    // STEP1: Delete user to receivedFriendRequests of selected user, if he/she exist
+    // STEP1: Delete user from receivedFriendRequests of friend, if exists
     if (friend.receivedFriendRequests.includes(user._id)) {
         try {
             friend.receivedFriendRequests.pull(user._id)
@@ -114,7 +111,7 @@ export const cancelFriendRequest = async (req, res) => {
         }
     }
 
-    // STEP2: Delete selected user to sentFriendRequests of user, if he/she exist
+    // STEP2: Delete friend from sentFriendRequests of user, if exists
     if (user.sentFriendRequests.includes(friendId)) {
         try {
             user.sentFriendRequests.pull(friendId)
@@ -127,10 +124,80 @@ export const cancelFriendRequest = async (req, res) => {
         }
     }
 
-    const friendRequests = await User.findById(user._id).select('-_id sentFriendRequests receivedFriendRequests')
-
-    res.status(200).send(friendRequests)
+    res.status(200).send(user.sentFriendRequests)
 }
+
+/** @type {import("express").RequestHandler} */
+export const acceptFriendRequest = async (req, res) => {
+    const user = req.user
+    const friendId = req.body.friendId
+
+    const friend = await User.findById(friendId)
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
+
+    // Check if the request is still valid and throw error if not
+    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
+
+    // STEP1: Delete friend from receivedFriendRequests
+    try {
+        user.receivedFriendRequests.pull(friendId)
+        await user.save()
+    } catch (err) {
+        throw httpErrors.InternalServerError('Something went wrong, please try later')
+    }
+
+    // STEP2: Delete user from sentFriendRequests of friend
+    try {
+        friend.sentFriendRequests.pull(user._id)
+        await user.save()
+    } catch (err) {
+        // If error occurs, cancel STEP1 and send error
+        user.receivedFriendRequests.push(friendId)
+        await user.save()
+        throw httpErrors.InternalServerError('Something went wrong, please try later')
+    }
+
+    // STEP3: Add friend to user's friends, if not exists yet
+    if (!user.friends.includes(friendId)) {
+        try {
+            user.friends.push(friendId)
+            await user.save()
+        } catch (err) {
+             // If error occurs, cancel STEP1 and 2 and send error
+            user.receivedFriendRequests.push(friendId)
+            await user.save()
+            friend.sentFriendRequests.pull(user._id)
+            await user.save()
+            throw httpErrors.InternalServerError('Could not add the user to friends')
+        }
+    }
+
+    // STEP4: Add user to friend's friends, if he/she doesn't exist yet
+    if (!friend.friends.includes(user._id)) {
+        try {
+            friend.friends.push(user._id)
+            await friend.save()
+        } catch (err) {
+            // If error occurs, cancel STEP1, 2, 3 and send error
+            user.receivedFriendRequests.push(friendId)
+            await user.save()
+            friend.sentFriendRequests.pull(user._id)
+            await user.save()
+            user.friends.pull(friendId)
+            await user.save()
+            throw httpErrors.InternalServerError('Could not add the user to friends')
+        }
+    }
+
+    res.status(200).json(user.friends)
+}
+
+/** @type {import("express").RequestHandler} */
+export const declineFriendRequest = async (req, res) => {
+   
+}
+
+
 
 
 // FRIENDS
@@ -141,47 +208,9 @@ export const getAllFriends = async (req, res) => {
 
     await user.populate('friends')
 
-    // ? populate like this?
-    const userFriendsPopulated = await user.populate('friends')
-
-    res.status(200).send(userFriendsPopulated)
+    res.status(200).send(user.friends)
 }
 
-/** @type {import("express").RequestHandler} */
-export const addFriend = async (req, res) => {
-    const user = req.user
-    const friendId = req.body.friendId
-
-    const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound()
-
-    // STEP1: Add friend to user's friends, if he/she doesn't exist yet
-    if (!user.friends.includes(friendId)) {
-        try {
-            user.friends.push(friendId)
-            await user.save()
-        } catch (err) {
-            throw httpErrors.InternalServerError('Could not add the user to friends')
-        }
-    }
-
-    // STEP2: Add user to friend's friends, if he/she doesn't exist yet
-    if (!friend.friends.includes(user._id)) {
-        try {
-            friend.friends.push(user._id)
-            await friend.save()
-        } catch (err) {
-            // If error occurs, cancel STEP1 and send error
-            user.friends.pull(friendId)
-            await user.save()
-            throw httpErrors.InternalServerError('Could not add the user to friends')
-        }
-    }
-
-    res.status(200).json({ user: user.friends, friend: friend.friends })
-}
-
-// Delete a friend
 /** @type {import("express").RequestHandler} */
 export const deleteFriend = async (req, res) => {
     const user = req.user

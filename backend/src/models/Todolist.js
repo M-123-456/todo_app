@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema({
-    user: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+    createdBy: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
     icon: { type: String, default: '📝'},
     title: { type: String, default: '' },
     position: { type: Number },

@@ -23,7 +23,7 @@ export const createTodolist = async (req, res) => {
         const todolistCount = await Todolist.findOne().where('user').equals(user._id).count()
 
         newTodolist = await Todolist.create({
-            user: user._id,
+            createdBy: user._id,
             // position new todolist at the end
             position: todolistCount > 0 ? todolistCount : 0,
             members: [{
@@ -83,22 +83,15 @@ export const getSharingMembers = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const addSharingMembers = async (req, res) => {
     const user = req.user
+    const member = req.member
     const listId = req.params.listId
-    const memberId = req.body.memberId
-
-    // Check if the new member already exists in user's friends
-    if (!user.friends.includes(memberId)) throw httpErrors('You are not authorized to add this user. Please become friends first!')
-
-    // Search for member by id and throw an error, if it cannot be found
-    const member = await User.findById(memberId)
-    if (!member) throw httpErrors.NotFound('User cannot be found')
 
     const todolist = await Todolist.findById(listId)
 
     // Add member in sharingMembers, if the members are not in list yet
-    if (!todolist.sharingMembers.includes(memberId)) {
+    if (!todolist.members.includes(member._id)) {
         try {
-            todolist.sharingMembers.push(memberId)
+            todolist.members.push(member)
             await todolist.save()
         } catch (err) {
             throw httpErrors.InternalServerError('Could not add the user to the sharing members of the todo list')
@@ -115,7 +108,7 @@ export const addSharingMembers = async (req, res) => {
         }
     }
 
-    res.status(200).json(todolist.sharingMembers)
+    res.status(200).json(todolist.members)
 }
 
 // Delete sharingMembers

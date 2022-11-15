@@ -40,7 +40,7 @@ Schema.methods.toJSON = function () {
 
 Schema.methods.generateToken = function () {
     const user = this
-    user.token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' })
+    user.token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' })
 }
 
 Schema.statics.findByName = function (username) {

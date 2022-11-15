@@ -23,16 +23,19 @@ router.patch(
     controller.changePassword
 )
 
-
-// FRIENDS //
-router.get('/:id/friends', auth, controller.getAllFriends)
-router.patch('/:id/add-friend', auth, controller.addFriend)
-router.patch('/:id/delete-friend', auth, controller.deleteFriend)
-
 // FRIEND REQUESTS //
 router.get('/:id/sent-friend-requests', auth, controller.getSentFriendRequests)
 router.get('/:id/received-friend-requests', auth, controller.getReceivedFriendRequests)
 router.patch('/:id/send-friend-request', auth, controller.sendFriendRequest)
 router.patch('/:id/cancel-friend-request', auth, controller.cancelFriendRequest)
+router.patch('/:id/accept-friend-request', auth, controller.acceptFriendRequest)
+router.patch('/:id/decline-friend-request', auth, controller.declineFriendRequest)
+
+// FRIENDS //
+router.get('/:id/friends', auth, controller.getAllFriends)
+router.patch('/:id/delete-friend', auth, controller.deleteFriend)
+
+
+
 
 export default router

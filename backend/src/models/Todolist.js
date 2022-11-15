@@ -9,7 +9,11 @@ const Schema = mongoose.Schema({
         todo: { type: String },
         isCompleted: { type: Boolean, default: false, required: true },
     }],
-    sharingMembers: [{ type: mongoose.Types.ObjectId, ref: 'User'}]
+    members: [{
+        id: { type: mongoose.Types.ObjectId, ref: 'User'},
+        isEdit: { type: Boolean, default: true },
+        isAdmin: { type: Boolean, default: false }
+    }]
 })
 
 const Todolist = mongoose.model('Todolist', Schema, 'todolists')

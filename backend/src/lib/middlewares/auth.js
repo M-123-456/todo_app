@@ -20,7 +20,6 @@ export const authSingleTodolist = (req, res, next) => {
 
     if (!user.todolists.includes(listId)) throw httpErrors.Unauthorized('You are not authorized to view this todolist')
 
-    req.listId = listId
     next()
 }
 

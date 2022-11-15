@@ -25,7 +25,11 @@ export const createTodolist = async (req, res) => {
         newTodolist = await Todolist.create({
             user: user._id,
             // position new todolist at the end
-            position: todolistCount > 0 ? todolistCount : 0
+            position: todolistCount > 0 ? todolistCount : 0,
+            members: [{
+                isEdit: true,
+                isAdmin: true
+            }]
         })
     } catch (err) {
         throw httpErrors.InternalServerError('Todolist could not be created. Please try later!')
@@ -45,7 +49,7 @@ export const createTodolist = async (req, res) => {
 
 /** @type {import("express").RequestHandler} */
 export const getTodolistById = async (req, res) => {
-    const listId = req.listId
+    const listId = req.params.listId
     const todolist = await Todolist.findById(listId)
 
     res.status(200).send(todolist)
@@ -54,7 +58,7 @@ export const getTodolistById = async (req, res) => {
 // Update of icon, title, position
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
-    const listId = req.listId
+    const listId = req.params.listId
 
     const todolist = await Todolist.findById(listId)
 
@@ -69,25 +73,27 @@ export const updateTodoList = async (req, res) => {
 // SHARING MEMBERS //
 /** @type {import("express").RequestHandler} */
 export const getSharingMembers = async (req, res) => {
-    const listId = req.listId
+    const listId = req.params.listId
 
     const todolist = await Todolist.findById(listId)
 
-    res.status(200).send(todolist.sharingMembers)
+    res.status(200).send(todolist.members)
 }
 
-// Add sharingMembers
 /** @type {import("express").RequestHandler} */
 export const addSharingMembers = async (req, res) => {
+    const user = req.user
     const listId = req.params.listId
     const memberId = req.body.memberId
 
-    // Search for todolist and member by id and throw an error, if one of them cannot be found
-    const todolist = await Todolist.findById(listId)
-    if (!todolist) throw httpErrors.NotFound()
+    // Check if the new member already exists in user's friends
+    if (!user.friends.includes(memberId)) throw httpErrors('You are not authorized to add this user. Please become friends first!')
 
+    // Search for member by id and throw an error, if it cannot be found
     const member = await User.findById(memberId)
     if (!member) throw httpErrors.NotFound('User cannot be found')
+
+    const todolist = await Todolist.findById(listId)
 
     // Add member in sharingMembers, if the members are not in list yet
     if (!todolist.sharingMembers.includes(memberId)) {

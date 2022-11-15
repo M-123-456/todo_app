@@ -26,8 +26,10 @@ router.patch(
 // FRIEND REQUESTS //
 router.get('/:id/sent-friend-requests', auth, controller.getSentFriendRequests)
 router.get('/:id/received-friend-requests', auth, controller.getReceivedFriendRequests)
+
 router.patch('/:id/send-friend-request', auth, controller.sendFriendRequest)
 router.patch('/:id/cancel-friend-request', auth, controller.cancelFriendRequest)
+
 router.patch('/:id/accept-friend-request', auth, controller.acceptFriendRequest)
 router.patch('/:id/decline-friend-request', auth, controller.declineFriendRequest)
 

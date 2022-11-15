@@ -6,9 +6,9 @@ import User from '../models/User.js'
 /** @type {import("express").RequestHandler} */
 export const signup = async (req, res) => {
     const user = await new User(req.body)
-    await user.generateToken()
+    const token = await user.generateToken()
     await user.save()
-    res.status(201).json(user)
+    res.status(201).send(token)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -22,17 +22,18 @@ export const login = async (req, res) => {
 
     if (!correctPassword) throw httpErrors.Unauthorized()
 
-    await user.generateToken()
+    const token = await user.generateToken()
     await user.save()
 
-    res.status(200).send(user.token)
+    res.status(200).send(token)
 }
 
 /** @type {import("express").RequestHandler} */
 export const logout = async (req, res) => {
     const user = req.user
+    const token = req.token
     
-    user.token = undefined
+    await user.tokens.pull(token)
 
     await user.save()
 

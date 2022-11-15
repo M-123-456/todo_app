@@ -67,6 +67,8 @@ export const sendFriendRequest = async (req, res) => {
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound('Cannot find the user')
 
+    //! already sent or alreay friends
+
     // STEP1: Add user to receivedFriendRequests of friend
     if (!friend.receivedFriendRequests.includes(user._id) && !friend.friends.includes(user._id)) {
         try {
@@ -101,6 +103,8 @@ export const cancelFriendRequest = async (req, res) => {
     const friend = await User.findById(friendId)
     if (!friend) return httpErrors.NotFound('Cannot find the user')
 
+    //! already removed
+
     // STEP1: Delete user from receivedFriendRequests of friend, if exists
     if (friend.receivedFriendRequests.includes(user._id)) {
         try {
@@ -132,11 +136,11 @@ export const acceptFriendRequest = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
-    const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
-
     // Check if the request is still valid and throw error if not
     if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
+
+    const friend = await User.findById(friendId)
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
 
     // STEP1: Delete friend from receivedFriendRequests
     try {
@@ -197,11 +201,11 @@ export const declineFriendRequest = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
-    const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
-
     // Check if the request is still valid and throw error if not
     if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
+    
+    const friend = await User.findById(friendId)
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
 
     // STEP1: Delete friend from receivedFriendRequests
     try {
@@ -227,14 +231,13 @@ export const declineFriendRequest = async (req, res) => {
 }
 
 
-
-
 // FRIENDS
 
 /** @type {import("express").RequestHandler} */
 export const getAllFriends = async (req, res) => {
     const user = req.user
 
+    //! select information
     await user.populate('friends')
 
     res.status(200).send(user.friends)
@@ -244,18 +247,19 @@ export const getAllFriends = async (req, res) => {
 export const deleteFriend = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
+    
+    //! res.send?
+    if (!user.friends.includes(friendId)) throw httpErrors.Unauthorized()
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound()
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
 
-    // STEP1: Add friend to user's friends, if he/she exists 
-    if (user.friends.includes(friendId)) {
-        try {
-            user.friends.pull(friendId)
-            await user.save()
-        } catch (err) {
-            throw httpErrors.InternalServerError('Could not delete the user from friends')
-        }
+    // STEP1: Delete friend from user's friends
+    try {
+        user.friends.pull(friendId)
+        await user.save()
+    } catch (err) {
+        throw httpErrors.InternalServerError('Could not delete the user from friends')
     }
 
     // STEP2: Add user to friend's friends, if he/she exists

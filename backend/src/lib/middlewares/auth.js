@@ -11,6 +11,7 @@ const auth = async (req, res, next) => {
     if (!user) throw httpErrors.Unauthorized()
 
     req.user = user
+    req.token = token
     next()
 }
 

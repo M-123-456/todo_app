@@ -11,7 +11,7 @@ const Schema = mongoose.Schema({
     friends: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     sentFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     receivedFriendRequests: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-    token: String
+    tokens: [String]
 })
 
 // hash password before saving, if password is modified
@@ -40,7 +40,10 @@ Schema.methods.toJSON = function () {
 
 Schema.methods.generateToken = function () {
     const user = this
-    user.token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' })
+    const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' })
+    user.tokens.push(token)
+
+    return token
 }
 
 Schema.statics.findByName = function (username) {
@@ -54,7 +57,7 @@ Schema.statics.findByEmail = function (email) {
 Schema.statics.findByToken = function (token) {
     const verified = jwt.verify(token, process.env.SECRET_KEY)
     
-    return User.findById(verified._id).where('token').equals(token)
+    return User.findById(verified._id).where('tokens').equals(token)
 }
 
 const User = mongoose.model('User', Schema, 'users')

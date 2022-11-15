@@ -194,7 +194,36 @@ export const acceptFriendRequest = async (req, res) => {
 
 /** @type {import("express").RequestHandler} */
 export const declineFriendRequest = async (req, res) => {
-   
+    const user = req.user
+    const friendId = req.body.friendId
+
+    const friend = await User.findById(friendId)
+    if (!friend) return httpErrors.NotFound('Cannot find the user')
+
+    // Check if the request is still valid and throw error if not
+    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
+
+    // STEP1: Delete friend from receivedFriendRequests
+    try {
+        user.receivedFriendRequests.pull(friendId)
+        await user.save()
+    } catch (err) {
+        throw httpErrors.InternalServerError('Something went wrong, please try later')
+    }
+
+    // STEP2: Delete user from sentFriendRequests of friend
+    // ? Leave it as it is?
+    // try {
+    //     friend.sentFriendRequests.pull(user._id)
+    //     await user.save()
+    // } catch (err) {
+    //     // If error occurs, cancel STEP1 and send error
+    //     user.receivedFriendRequests.push(friendId)
+    //     await user.save()
+    //     throw httpErrors.InternalServerError('Something went wrong, please try later')
+    // }
+
+    res.status(200).json(user.receivedFriendRequests)
 }
 
 

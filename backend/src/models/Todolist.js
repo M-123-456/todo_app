@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema({
     user: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
     icon: { type: String, default: '📝'},
-    title: { type: String, default: 'My Todolist' },
+    title: { type: String, default: '' },
     position: { type: Number },
     todos: [{
         todo: { type: String },

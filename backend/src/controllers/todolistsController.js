@@ -2,15 +2,13 @@ import Todolist from "../models/Todolist.js"
 import User from '../models/User.js'
 import httpErrors from 'http-errors'
 
-// Get all todolists of the login user
 /** @type {import("express").RequestHandler} */
 export const getAllTodolists = async (req, res) => {
     let user = req.user
-    
-    //! 
-    user = await user.populate('todolists')
 
-    res.status(200).send(user.todolists)
+    const todolists = await Todolist.find().where('user').equals(user._id)
+
+    res.status(200).send(todolists)
 }
 
 // Create a new todolist of the login user
@@ -45,24 +43,20 @@ export const createTodolist = async (req, res) => {
     res.status(201).send(newTodolist)
 }
 
-// Get todolist by id of todolist
 /** @type {import("express").RequestHandler} */
 export const getTodolistById = async (req, res) => {
-    const id = req.params.listId
-
-    const todolist = await Todolist.findById(id).populate('todos', '-_id -__v')
-    if (!todolist) throw httpErrors.NotFound()
+    const listId = req.listId
+    const todolist = await Todolist.findById(listId)
 
     res.status(200).send(todolist)
 }
 
-// Update todolist (icon, title, position)
+// Update of icon, title, position
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
-    const id = req.params.listId
+    const listId = req.listId
 
-    const todolist = await Todolist.findById(id)
-    if (!todolist) throw httpErrors.NotFound()
+    const todolist = await Todolist.findById(listId)
 
     for (const key in req.body) {
         todolist[key] = req.body[key]
@@ -72,13 +66,12 @@ export const updateTodoList = async (req, res) => {
     res.status(200).send(todolist)
 }
 
-// Get sharingMembers
+// SHARING MEMBERS //
 /** @type {import("express").RequestHandler} */
 export const getSharingMembers = async (req, res) => {
-    const id = req.params.listId
+    const listId = req.listId
 
-    const todolist = await Todolist.findById(id)
-    if (!todolist) throw httpErrors.NotFound()
+    const todolist = await Todolist.findById(listId)
 
     res.status(200).send(todolist.sharingMembers)
 }

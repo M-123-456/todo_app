@@ -4,7 +4,7 @@ import 'express-async-errors'
 import auth, { authSingleTodolist, authAdmin } from '../lib/middlewares/auth.js'
 import * as controller from '../controllers/todolistsController.js'
 import * as validations from '../lib/validations/todolistRules.js'
-import { friendValidation } from '../lib/middlewares/validation.js'
+import * as validate from '../lib/middlewares/validation.js'
 
 const router = express.Router()
 
@@ -26,20 +26,44 @@ router.get(
     authSingleTodolist, 
     controller.getMembers
 )
+
 router.patch(
-    '/:listId/add-member', 
-    auth, 
-    authSingleTodolist, 
-    authAdmin, 
-    friendValidation, 
+    '/:listId/add-member',
+    auth,
+    authSingleTodolist,
+    authAdmin,
+    validate.isFriend,
+    validate.memberExists,
+    validate.isMember,
     controller.addMembers
+)
+
+router.patch(
+    '/:listId/update-admin-member',
+    auth,
+    authSingleTodolist,
+    authAdmin,
+    validate.memberExists,
+    validate.isMember,
+    controller.toggleAdminRight
+)
+
+router.patch(
+    '/:listId/update-edit-member',
+    auth,
+    authSingleTodolist,
+    authAdmin, 
+    validate.memberExists,
+    validate.isMember,
+    controller.toggleEditRight
 )
 
 router.patch(
     '/:listId/delete-member', 
     auth, 
     authSingleTodolist,
-    authAdmin, 
+    authAdmin,
+    validate.memberExists,
     controller.deleteMembers
 )
 

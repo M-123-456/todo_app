@@ -20,10 +20,9 @@ export const validatePassword = async (req, res, next) => {
     next()
 }
 
+
 // ? Category
-
-
-export const friendValidation = async (req, res, next) => {
+export const isFriend = async (req, res, next) => {
     const user = req.user
     const memberId = req.body.memberId
 
@@ -34,8 +33,33 @@ export const friendValidation = async (req, res, next) => {
     const member = await User.findById(memberId)
     if (!member) throw httpErrors.NotFound('User cannot be found')
 
+    next()
+}
+
+export const memberExists = async (req,res,next) => {
+    const memberId = req.body.memberId
+
+    // Search for member by id and throw an error, if it cannot be found
+    const member = await User.findById(memberId)
+    if (!member) throw httpErrors.NotFound('User cannot be found')
+
     req.member = member
 
+    next()
+}
+
+export const isMember = async (req, res, next) => {
+    const member = req.member
+    const todolist = req.todolist
+
+    let isAlreadyMember = false
+    for(const m of todolist.members) {
+        if(m._id.valueOf() === member._id.valueOf()) {
+            isAlreadyMember = true
+        }
+    }
+    
+    req.isMember = isAlreadyMember
     next()
 }
 

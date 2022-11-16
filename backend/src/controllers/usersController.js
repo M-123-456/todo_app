@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import Todolist from '../models/Todolist.js'
 import httpErrors from 'http-errors'
 
 
@@ -61,20 +62,21 @@ export const sendFriendRequest = async (req, res) => {
     const friend = await User.findById(friendId)
     if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
+    // ? Error bad request?
     // For below cases, send following messages to inform user about it
     // 'friend' is already friend
     // user sent already friend request
     // user received friend request from 'friend'
     if (user.friends.includes(friendId)) {
-        return res.status(200).send('The user is already your friend')
+        throw httpErrors.BadRequest('The user is already your friend')
     }
 
     if (user.receivedFriendRequests.includes(friendId)) {
-        return res.status(200).send("You've already received a friend request from the user. Please accept the request to become friends")
+        throw httpErrors.BadRequest("You've already received a friend request from the user. Please accept the request to become friends")
     }
 
     if (user.sentFriendRequests.includes(friendId)) {
-        return res.status(200).send("You've already sent a friend request to the user. Please wait till the request is accepted.")
+        throw httpErrors.BadRequest("You've already sent a friend request to the user. Please wait till the request is accepted.")
     }
 
 
@@ -113,7 +115,7 @@ export const cancelFriendRequest = async (req, res) => {
     if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
     if (!user.sentFriendRequests.includes(friendId)) {
-        return res.status(200).send("There is no open friend request to the user")
+        throw httpErrors.BadRequest("There is no open friend request to the user")
     }
 
     // STEP1: Delete user from receivedFriendRequests of friend, if exists
@@ -216,7 +218,7 @@ export const declineFriendRequest = async (req, res) => {
     if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
     // Check if the request is still valid and respond if not
-    if (!user.receivedFriendRequests.includes(friendId)) return res.status(200).send("There is no open friend request to the user")
+    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.BadRequest("There is no open friend request to the user")
 
     // STEP1: Delete friend from receivedFriendRequests
     try {
@@ -232,7 +234,7 @@ export const declineFriendRequest = async (req, res) => {
     //     friend.sentFriendRequests.pull(user._id)
     //     await user.save()
     // } catch (err) {
-    //     // If error occurs, cancel STEP1 and send error
+        // If error occurs, cancel STEP1 and send error
     //     user.receivedFriendRequests.push(friendId)
     //     await user.save()
     //     throw httpErrors.InternalServerError('Something went wrong, please try later')
@@ -259,8 +261,7 @@ export const deleteFriend = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
-    //! Error?
-    if (!user.friends.includes(friendId)) return res.status(200).send('The user is no longer your friend')
+    if (!user.friends.includes(friendId)) throw httpErrors.BadRequest('The user is no longer your friend')
 
     const friend = await User.findById(friendId)
     if (!friend) throw httpErrors.NotFound('Cannot find the user')
@@ -287,9 +288,28 @@ export const deleteFriend = async (req, res) => {
     }
 
     // ?
-    // STEP2: Check user's todolists shared with friend and edit members
-                // If user is owner and no one else sharing the todolist is admin, delete friend from member
-                // If friend is owner and no one else sharing the todolist is admin, delete user from member
+    // STEP3: Check user's todolists shared with friend and edit members
+    for(const todolistId of user.todolists) {
+        const sharedList = await Todolist.find({ _id: todolistId, members: { _id: {$in: [user._id, friendId]} }})
+        // check if there is any other members with admin right
+        let otherMemberIsAdmin = false
+        for(const m of sharedList.members) {
+            if (m.isAdmin && m._id !== user._id && m._id !== friendId) {
+                otherMemberIsAdmin = true
+            }
+        }
+        // If user is owner and no one else sharing the todolist is admin, delete friend from member
+        if(sharedList.owner === user._id && !otherMemberIsAdmin) {
+            sharedList.members.pull(friend)
+        }
+
+        // If friend is owner and no one else sharing the todolist is admin, delete user from member
+        if (sharedList.owner === friendId && !otherMemberIsAdmi) {
+            sharedList.members.pull(user)
+        }
+
+        sharedList.save()
+    }  
 
     res.status(200).json(user.friends)
 }

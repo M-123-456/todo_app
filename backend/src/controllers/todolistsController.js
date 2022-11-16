@@ -91,13 +91,10 @@ export const getMembers = async (req, res) => {
 export const addMembers = async (req, res) => {
     const member = req.member
     const todolist = req.todolist
+    const isMember  = req.isMember
 
     // If the 'member' is already sharing the todolist, respond with below message
-    let memberIsInMembers = false
-    for(const m of todolist.members) {
-        if(m._id.valueOf() === member._id.valueOf()) memberIsInMembers = true
-    }
-    if(memberIsInMembers) throw httpErrors.BadRequest('The user is already sharing this todolist')
+    if(isMember) throw httpErrors.BadRequest('The user is already sharing this todolist')
 
     // STEP1: Add member
     try {
@@ -124,25 +121,58 @@ export const addMembers = async (req, res) => {
 }
 
 /** @type {import("express").RequestHandler} */
-export const deleteMembers = async (req, res) => {
+export const toggleAdminRight = async (req, res) => {
     const todolist = req.todolist
-    const memberId = req.body.memberId    
+    const member = req.member
+    const isMember = req.isMember
 
-    const member = await User.findById(memberId)
-    if (!member) throw httpErrors.NotFound('User cannot be found')
+    if (!isMember) throw httpErrors.BadRequest('The user is not sharing this todolist')
 
-    if(!todolist.members.includes(memberId)) {
-        return res.status(200).send('The user is not a member of the todolist')
+    // If the 'member' is already sharing the todolist, respond with below message
+    for (const m of todolist.members) {
+        if (m._id.valueOf() === member._id.valueOf()) {
+            m.isAdmin = !m.isAdmin
+            todolist.save()
+        }
+    }
+   
+    res.status(200).send(todolist.members)
+}
+
+/** @type {import("express").RequestHandler} */
+export const toggleEditRight = async (req, res) => {
+    const todolist = req.todolist
+    const member = req.member
+    const isMember = req.isMember
+
+    if (!isMember) throw httpErrors.BadRequest('The user is not sharing this todolist')
+
+    // If the 'member' is already sharing the todolist, respond with below message
+    for (const m of todolist.members) {
+        if (m._id.valueOf() === member._id.valueOf()) {
+            m.isEdit = !m.isEdit
+            todolist.save()
+        }
     }
 
+    res.status(200).send(todolist.members)
+}
+
+/** @type {import("express").RequestHandler} */
+export const deleteMembers = async (req, res) => {
+    const todolist = req.todolist
+    const member = req.member 
+    const isMember = req.isMember
+
+    // If 'member' is not the member of todolist, send error
+    if(!isMember) throw httpErrors.BadRequest('The user is not sharing this todolist')
+
     // STEP1: Remove member
-    if (todolist.members.includes(memberId)) {
-        try {
-            todolist.members.pull(memberId)
-            await todolist.save()
-        } catch (err) {
-            throw httpErrors.InternalServerError('Could not add the user to the sharing members of the todo list')
-        }
+    try {
+        todolist.members.pull(memberId)
+        await todolist.save()
+    } catch (err) {
+        throw httpErrors.InternalServerError('Could not add the user to the sharing members of the todo list')
     }
 
     // STEP2: Remove todolist from member's todolist

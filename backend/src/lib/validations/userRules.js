@@ -2,8 +2,7 @@ import { body } from 'express-validator'
 import validate, { validatePassword } from '../middlewares/validation.js'
 
 export const updateProfile = [
-    body('username').trim(),
-    body('username').optional().isString(),
+    body('username').trim().optional().isString(),
     body('avatar').optional().isString(),
     validate
 ]
@@ -15,6 +14,3 @@ export const changePassword = [
     validatePassword
 ]
 
-export const addFriends = [
-    body('friendId').isString()
-]

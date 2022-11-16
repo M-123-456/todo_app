@@ -1,18 +1,9 @@
 import { body } from 'express-validator'
-import validate from '../middlewares/validation'
+import validate from '../middlewares/validation.js'
 
-const create = [
-
+export const update = [
+    body('icon').trim().optional().isString(),
+    body('title').optional().isString(),
+    validate
 ]
 
-const update = [
-
-]
-
-const addMembers = [
-
-]
-
-const deleteMembers = [
-    
-]

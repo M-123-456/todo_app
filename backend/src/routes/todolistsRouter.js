@@ -3,6 +3,8 @@ import 'express-async-errors'
 
 import auth, { authSingleTodolist } from '../lib/middlewares/auth.js'
 import * as controller from '../controllers/todolistsController.js'
+import * as validations from '../lib/validations/todolistRules.js'
+import { memberValidation } from '../lib/middlewares/validation.js'
 
 const router = express.Router()
 
@@ -14,12 +16,12 @@ router.route('/')
 // Single todolist
 router.route('/:listId')
     .get(auth, authSingleTodolist, controller.getTodolistById)
-    .patch(auth, authSingleTodolist, controller.updateTodoList)
+    .patch(auth, authSingleTodolist, validations.update, controller.updateTodoList)
 
 
-// Single todolist > sharedMembers
-router.get('/:listId/members', auth, authSingleTodolist, controller.getSharingMembers)
-router.patch('/:listId/add-members', auth, authSingleTodolist, controller.addSharingMembers)
-router.patch('/:listId/delete-members', auth, authSingleTodolist, controller.deleteSharingMembers)
+// Single todolist > members
+router.get('/:listId/members', auth, authSingleTodolist, controller.getMembers)
+router.patch('/:listId/add-member', auth, authSingleTodolist, memberValidation, controller.addMembers)
+router.patch('/:listId/delete-member', auth, authSingleTodolist, controller.deleteMembers)
 
 export default router

@@ -55,7 +55,7 @@ export const getTodolistById = async (req, res) => {
     res.status(200).send(todolist)
 }
 
-// Update of icon, title, position
+// Update of icon, title
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
     const listId = req.params.listId
@@ -72,7 +72,7 @@ export const updateTodoList = async (req, res) => {
 
 // SHARING MEMBERS //
 /** @type {import("express").RequestHandler} */
-export const getSharingMembers = async (req, res) => {
+export const getMembers = async (req, res) => {
     const listId = req.params.listId
 
     const todolist = await Todolist.findById(listId)
@@ -81,14 +81,17 @@ export const getSharingMembers = async (req, res) => {
 }
 
 /** @type {import("express").RequestHandler} */
-export const addSharingMembers = async (req, res) => {
+export const addMembers = async (req, res) => {
     const user = req.user
     const member = req.member
     const listId = req.params.listId
 
     const todolist = await Todolist.findById(listId)
 
-    // Add member in sharingMembers, if the members are not in list yet
+    // If the 'member' is already sharing the todolist, respond with below message
+    if (todolist.members.includes(member._id)) return res.status(200).send('The user is already sharing the todolist')
+
+    // STEP1: Add member
     if (!todolist.members.includes(member._id)) {
         try {
             todolist.members.push(member)
@@ -98,12 +101,15 @@ export const addSharingMembers = async (req, res) => {
         }
     }
 
-    // Add todolist to member
+    // STEP2: Add todolist to member
     if (!member.todolists.includes(listId)) {
         try {
             member.todolists.push(listId)
             await member.save()
         } catch (err) {
+            // If error occurs, cancel STEP1 and send error
+            todolist.members.pull(member)
+            await todolist.save()
             throw httpErrors.InternalServerError('Could not share the todolist with the selected friend')
         }
     }
@@ -113,7 +119,7 @@ export const addSharingMembers = async (req, res) => {
 
 // Delete sharingMembers
 /** @type {import("express").RequestHandler} */
-export const deleteSharingMembers = async (req, res) => {
+export const deleteMembers = async (req, res) => {
     const listId = req.params.listId
     const memberId = req.body.memberId
 

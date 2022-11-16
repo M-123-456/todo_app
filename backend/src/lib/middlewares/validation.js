@@ -23,7 +23,7 @@ export const validatePassword = async (req, res, next) => {
 // ? Category
 export const memberValidation = async (req, res, next) => {
     const user = req.user
-    const memberId = req.params.memberId
+    const memberId = req.body.memberId
 
     // Check if the new member already exists in user's friends
     if (!user.friends.includes(memberId)) throw httpErrors('You are not authorized to add this user. Please become friends first!')

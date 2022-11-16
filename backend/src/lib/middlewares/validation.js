@@ -21,7 +21,9 @@ export const validatePassword = async (req, res, next) => {
 }
 
 // ? Category
-export const memberValidation = async (req, res, next) => {
+
+
+export const friendValidation = async (req, res, next) => {
     const user = req.user
     const memberId = req.body.memberId
 

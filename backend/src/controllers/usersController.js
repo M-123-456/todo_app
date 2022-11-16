@@ -286,5 +286,10 @@ export const deleteFriend = async (req, res) => {
         }
     }
 
+    // ?
+    // STEP2: Check user's todolists shared with friend and edit members
+                // If user is owner and no one else sharing the todolist is admin, delete friend from member
+                // If friend is owner and no one else sharing the todolist is admin, delete user from member
+
     res.status(200).json(user.friends)
 }

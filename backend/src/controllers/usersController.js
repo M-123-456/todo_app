@@ -13,12 +13,6 @@ export const updateProfile = async (req, res) => {
     const user = req.user
     const { username, avatar } = req.body
 
-    const foundUser = await User.findByName(username)
-
-    if (foundUser && foundUser.email !== user.email) {
-        throw httpErrors.Unauthorized('User with the name exists already')
-    }
-
     if (username) user.username = username
 
     if (avatar) user.avatar = avatar
@@ -65,11 +59,26 @@ export const sendFriendRequest = async (req, res) => {
     const friendId = req.body.friendId
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
+    if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
-    //! already sent or alreay friends
+    // For below cases, send following messages to inform user about it
+    // 'friend' is already friend
+    // user sent already friend request
+    // user received friend request from 'friend'
+    if (user.friends.includes(friendId)) {
+        return res.status(200).send('The user is already your friend')
+    }
 
-    // STEP1: Add user to receivedFriendRequests of friend
+    if (user.receivedFriendRequests.includes(friendId)) {
+        return res.status(200).send("You've already received a friend request from the user. Please accept the request to become friends")
+    }
+
+    if (user.sentFriendRequests.includes(friendId)) {
+        return res.status(200).send("You've already sent a friend request to the user. Please wait till the request is accepted.")
+    }
+
+
+    // STEP1: Add user to receivedFriendRequests of "friend"
     if (!friend.receivedFriendRequests.includes(user._id) && !friend.friends.includes(user._id)) {
         try {
             friend.receivedFriendRequests.push(user._id)
@@ -79,7 +88,7 @@ export const sendFriendRequest = async (req, res) => {
         }
     }
 
-    // STEP2: Add friend to sentFriendRequests of user
+    // STEP2: Add "friend" to sentFriendRequests of user
     if (!user.sentFriendRequests.includes(friendId) && !user.friends.includes(friendId)) {
         try {
             user.sentFriendRequests.push(friendId)
@@ -101,9 +110,11 @@ export const cancelFriendRequest = async (req, res) => {
     const friendId = req.body.friendId
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
+    if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
-    //! already removed
+    if (!user.sentFriendRequests.includes(friendId)) {
+        return res.status(200).send("There is no open friend request to the user")
+    }
 
     // STEP1: Delete user from receivedFriendRequests of friend, if exists
     if (friend.receivedFriendRequests.includes(user._id)) {
@@ -136,11 +147,11 @@ export const acceptFriendRequest = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
-    // Check if the request is still valid and throw error if not
-    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
-
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
+    if (!friend) throw httpErrors.NotFound('Cannot find the user')
+
+    // Check if the request is still valid and throw error if not
+    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.BadRequest("There is no open friend request from the user. Please send a friend request to become friends")
 
     // STEP1: Delete friend from receivedFriendRequests
     try {
@@ -167,7 +178,7 @@ export const acceptFriendRequest = async (req, res) => {
             user.friends.push(friendId)
             await user.save()
         } catch (err) {
-             // If error occurs, cancel STEP1 and 2 and send error
+            // If error occurs, cancel STEP1 and 2 and send error
             user.receivedFriendRequests.push(friendId)
             await user.save()
             friend.sentFriendRequests.pull(user._id)
@@ -201,11 +212,11 @@ export const declineFriendRequest = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
 
-    // Check if the request is still valid and throw error if not
-    if (!user.receivedFriendRequests.includes(friendId)) throw httpErrors.Unauthorized("You haven't received friend request yet from the user. Please send a request to become friends with the user")
-    
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
+    if (!friend) throw httpErrors.NotFound('Cannot find the user')
+
+    // Check if the request is still valid and respond if not
+    if (!user.receivedFriendRequests.includes(friendId)) return res.status(200).send("There is no open friend request to the user")
 
     // STEP1: Delete friend from receivedFriendRequests
     try {
@@ -247,12 +258,12 @@ export const getAllFriends = async (req, res) => {
 export const deleteFriend = async (req, res) => {
     const user = req.user
     const friendId = req.body.friendId
-    
-    //! res.send?
-    if (!user.friends.includes(friendId)) throw httpErrors.Unauthorized()
+
+    //! Error?
+    if (!user.friends.includes(friendId)) return res.status(200).send('The user is no longer your friend')
 
     const friend = await User.findById(friendId)
-    if (!friend) return httpErrors.NotFound('Cannot find the user')
+    if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
     // STEP1: Delete friend from user's friends
     try {
@@ -262,7 +273,7 @@ export const deleteFriend = async (req, res) => {
         throw httpErrors.InternalServerError('Could not delete the user from friends')
     }
 
-    // STEP2: Add user to friend's friends, if he/she exists
+    // STEP2: Delete user from friend's friends
     if (friend.friends.includes(user._id)) {
         try {
             friend.friends.pull(user._id)
@@ -275,5 +286,5 @@ export const deleteFriend = async (req, res) => {
         }
     }
 
-    res.status(200).json({ user: user.friends, friend: friend.friends })
+    res.status(200).json(user.friends)
 }

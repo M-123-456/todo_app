@@ -23,7 +23,7 @@ export const createTodolist = async (req, res) => {
         const todolistCount = await Todolist.findOne().where('user').equals(user._id).count()
 
         newTodolist = await Todolist.create({
-            createdBy: user._id,
+            owner: user._id,
             // position new todolist at the end
             position: todolistCount > 0 ? todolistCount : 0,
             members: [{

@@ -33,6 +33,7 @@ export const authAdmin = async (req, res, next) => {
 
     if (!todolist) throw httpErrors.NotFound()
 
+    //? find?
     let userIsAdmin = false
     for (const member of todolist.members) {
         //! objectId

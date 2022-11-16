@@ -93,7 +93,11 @@ export const addMembers = async (req, res) => {
     const todolist = req.todolist
 
     // If the 'member' is already sharing the todolist, respond with below message
-    if (todolist.members.includes(member._id)) return res.status(200).send('The user is already sharing the todolist')
+    let memberIsInMembers = false
+    for(const m of todolist.members) {
+        if(m._id.valueOf() === member._id.valueOf()) memberIsInMembers = true
+    }
+    if(memberIsInMembers) throw httpErrors.BadRequest('The user is already sharing this todolist')
 
     // STEP1: Add member
     try {

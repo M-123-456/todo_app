@@ -5,49 +5,46 @@ import User from '../models/User.js'
 
 /** @type {import("express").RequestHandler} */
 export const signup = async (req, res) => {
-    const user = await new User(req.body)
-    const token = await user.generateToken()
-    await user.save()
-    res.status(201).send(token)
+  const user = await new User(req.body)
+  const token = await user.generateToken()
+  await user.save()
+  res.status(201).send(token)
 }
 
 /** @type {import("express").RequestHandler} */
 export const login = async (req, res) => {
-    const { email, password } = req.body
-    const user = await User.findByEmail(email)
+  const { email, password } = req.body
+  const user = await User.findByEmail(email)
 
-    if (!user) throw httpErrors.Unauthorized()
+  if (!user) throw httpErrors.Unauthorized()
 
-    const correctPassword = await bcrypt.compare(password, user.password)
+  const correctPassword = await bcrypt.compare(password, user.password)
 
-    if (!correctPassword) throw httpErrors.Unauthorized()
+  if (!correctPassword) throw httpErrors.Unauthorized()
 
-    const token = await user.generateToken()
-    await user.save()
+  const token = await user.generateToken()
+  await user.save()
 
-    res.status(200).send(token)
+  res.status(200).send(token)
 }
 
 /** @type {import("express").RequestHandler} */
 export const logout = async (req, res) => {
-    const user = req.user
-    const token = req.token
-    
-    await user.tokens.pull(token)
+  const user = req.user
+  const token = req.token
 
-    await user.save()
+  await user.tokens.pull(token)
 
-    res.status(204).send()
+  await user.save()
+
+  res.status(204).send()
 }
 
 /** @type {import("express").RequestHandler} */
 export const deleteAccount = async (req, res) => {
-    const user = req.user
+  const user = req.user
 
-    await User.deleteOne().where('_id').equals(user._id)
+  await User.deleteOne().where('_id').equals(user._id)
 
-    res.status(202).send("Successfully deleted")
+  res.status(202).send("Successfully deleted")
 }
-
-
-

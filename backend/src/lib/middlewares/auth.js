@@ -3,50 +3,44 @@ import User from '../../models/User.js'
 import Todolist from '../../models/Todolist.js'
 
 const auth = async (req, res, next) => {
-    const token = req.headers['x-auth']
+  const token = req.headers['x-auth']
 
-    if (!token) throw httpErrors.Unauthorized()
+  if (!token) throw httpErrors.Unauthorized()
 
-    const user = await User.findByToken(token)
+  const user = await User.findByToken(token)
 
-    if (!user) throw httpErrors.Unauthorized()
+  if (!user) throw httpErrors.Unauthorized()
 
-    req.user = user
-    req.token = token
-    next()
+  req.user = user
+  req.token = token
+  next()
 }
 
 export const authSingleTodolist = (req, res, next) => {
-    const user = req.user
-    const listId = req.params.listId
+  const user = req.user
+  const listId = req.params.listId
 
-    if (!user.todolists.includes(listId)) throw httpErrors.Unauthorized('You are not authorized to view this todolist')
+  if (!user.todolists.includes(listId)) throw httpErrors.Unauthorized('You are not authorized to view this todolist')
 
-    next()
+  next()
 }
 
 export const authAdmin = async (req, res, next) => {
-    const user = req.user
-    const listId = req.params.listId
+  const user = req.user
+  const listId = req.params.listId
 
-    const todolist = await Todolist.findById(listId)
+  const todolist = await Todolist.findById(listId)
 
-    if (!todolist) throw httpErrors.NotFound()
+  if (!todolist) throw httpErrors.NotFound()
 
-    //? find?
-    let userIsAdmin = false
-    for (const member of todolist.members) {
-        //! objectId
-        if (member._id.valueOf() === user._id.valueOf()) {
-            userIsAdmin = member.isAdmin
-        }
-    }
+  const userIsAdmin = !!todolist.members.find(m => {
+    return m._id.valueOf() === user._id.valueOf()
+  })
 
-    if (!userIsAdmin) throw httpErrors.Unauthorized('You are not allowed to edit members')
+  if (!userIsAdmin) throw httpErrors.Unauthorized('You are not allowed to edit members')
 
-    req.todolist = todolist
-    next()
+  req.todolist = todolist
+  next()
 }
-
 
 export default auth

@@ -7,7 +7,6 @@ import * as validations from '../lib/validations/userRules.js'
 
 const router = express.Router()
 
-//! delete id
 router.get('/', auth, controller.getUser)
 
 router.patch(

@@ -7,7 +7,7 @@ import './src/db/db.js'
 import accountRoute from './src/routes/accountRouter.js'
 import usersRoute from './src/routes/usersRouter.js'
 import todolistsRoute from './src/routes/todolistsRouter.js'
-
+import todosRoute from './src/routes/todosRouter.js'
 
 const app = express()
 
@@ -15,8 +15,8 @@ app.use(express.json())
 
 // Cors
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions))
 
@@ -24,20 +24,18 @@ app.use(cors(corsOptions))
 app.use('/api/v1/account', accountRoute)
 app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/todolists', todolistsRoute)
-
+app.use('/api/v1/todolists', todosRoute)
 
 // 404 error handling
 app.use((req, res, next) => {
-    throw httpErrors.NotFound()
+  throw httpErrors.NotFound()
 })
 
 // General error handling
 app.use((error, req, res, next) => {
-    res.status(error.status || 505).json({ message: error.message })
+  res.status(error.status || 505).json({ message: error.message })
 })
-
 
 app.listen(process.env.PORT, () => {
-    console.log('Listening on server....')
+  console.log('Listening on server....')
 })
-

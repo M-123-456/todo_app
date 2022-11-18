@@ -57,4 +57,11 @@ router.patch(
   controller.deleteMembers
 )
 
+// todo Get out of the todolist group
+router.patch(
+  '/:listId/cencel-membership',
+  auth, 
+  authSingleTodolist
+)
+
 export default router

@@ -6,7 +6,7 @@ const Schema = mongoose.Schema({
   title: { type: String, default: '' },
   position: { type: Number },
   todos: [{
-    todo: { type: String },
+    todo: { type: String, unique: true },
     isCompleted: { type: Boolean, default: false, required: true }
   }],
   members: [{

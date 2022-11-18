@@ -10,8 +10,7 @@ const Schema = mongoose.Schema({
     isCompleted: { type: Boolean, default: false, required: true }
   }],
   members: [{
-    id: { type: mongoose.Types.ObjectId, ref: 'User' },
-    isEdit: { type: Boolean, default: true },
+    _id: { type: mongoose.Types.ObjectId, ref: 'User' },
     isAdmin: { type: Boolean, default: false }
   }]
 })

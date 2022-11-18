@@ -42,16 +42,9 @@ Schema.methods.toJSON = function () {
 Schema.methods.generateToken = function () {
   const user = this
   // Go through the existing tokens and if expired, delete
-  user.tokens.forEach(async token => {
-    const verified = jwt.verify(token, process.env.SECRET_KEY, (err, verified) => {
-      if (err) {
-        return null
-      }
-      return verified
-    })
-    if (!verified) {
-      user.tokens.pull(token)
-    }
+  user.tokens.forEach(token => {
+    const verified = jwt.verify(token, process.env.SECRET_KEY, (err, verified) => (err ? null : verified))
+    if (!verified) user.tokens.pull(token)
   })
   // create new token and push to tokens
   const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' })

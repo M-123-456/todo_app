@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
   const user = await new User(req.body)
   const token = await user.generateToken()
   await user.save()
-  res.status(201).send(token)
+  res.status(201).json(token)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -25,7 +25,7 @@ export const login = async (req, res) => {
   const token = await user.generateToken()
   await user.save()
 
-  res.status(200).send(token)
+  res.status(200).json(token)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -37,7 +37,7 @@ export const logout = async (req, res) => {
 
   await user.save()
 
-  res.status(204).send()
+  res.status(204).json()
 }
 
 /** @type {import("express").RequestHandler} */
@@ -46,5 +46,5 @@ export const deleteAccount = async (req, res) => {
 
   await User.deleteOne().where('_id').equals(user._id)
 
-  res.status(202).send("Successfully deleted")
+  res.status(202).json()
 }

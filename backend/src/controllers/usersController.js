@@ -1,11 +1,10 @@
 import User from '../models/User.js'
-import Todolist from '../models/Todolist.js'
 import httpErrors from 'http-errors'
 
 /** @type {import("express").RequestHandler} */
 export const getUser = async (req, res) => {
   const user = req.user
-  res.status(200).send(user)
+  res.status(200).json(user)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -19,7 +18,7 @@ export const updateProfile = async (req, res) => {
 
   await user.save()
 
-  res.status(200).send(user)
+  res.status(200).json(user)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -30,7 +29,7 @@ export const changePassword = async (req, res) => {
 
   await user.save()
 
-  res.status(200).send(user)
+  res.status(200).json(user)
 }
 
 // FRIENDS REQUEST
@@ -41,7 +40,7 @@ export const getSentFriendRequests = async (req, res) => {
 
   user = await user.populate('sentFriendRequests')
 
-  res.status(200).send(user.sentFriendRequests)
+  res.status(200).json(user.sentFriendRequests)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -50,7 +49,7 @@ export const getReceivedFriendRequests = async (req, res) => {
 
   user = await user.populate('receivedFriendRequests')
 
-  res.status(200).send(user.receivedFriendRequests)
+  res.status(200).json(user.receivedFriendRequests)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -61,19 +60,16 @@ export const sendFriendRequest = async (req, res) => {
   const friend = await User.findById(friendId)
   if (!friend) throw httpErrors.NotFound('Cannot find the user')
 
-  // ? Error bad request?
   // For below cases, send following messages to inform user about it
   // 'friend' is already friend
-  // user sent already friend request
-  // user received friend request from 'friend'
   if (user.friends.includes(friendId)) {
     throw httpErrors.BadRequest('The user is already your friend')
   }
-
+  // user sent already friend request
   if (user.receivedFriendRequests.includes(friendId)) {
     throw httpErrors.BadRequest("You've already received a friend request from the user. Please accept the request to become friends")
   }
-
+  // user received friend request from 'friend'
   if (user.sentFriendRequests.includes(friendId)) {
     throw httpErrors.BadRequest("You've already sent a friend request to the user. Please wait till the request is accepted.")
   }
@@ -101,7 +97,7 @@ export const sendFriendRequest = async (req, res) => {
     }
   }
 
-  res.status(200).send(user.sentFriendRequests)
+  res.status(200).json(user.sentFriendRequests)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -139,7 +135,7 @@ export const cancelFriendRequest = async (req, res) => {
     }
   }
 
-  res.status(200).send(user.sentFriendRequests)
+  res.status(200).json(user.sentFriendRequests)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -250,7 +246,7 @@ export const getAllFriends = async (req, res) => {
   //! select information
   await user.populate('friends')
 
-  res.status(200).send(user.friends)
+  res.status(200).json(user.friends)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -258,11 +254,11 @@ export const deleteFriend = async (req, res) => {
   const user = req.user
   const friendId = req.body.friendId
 
-  if (!user.friends.includes(friendId)) throw httpErrors.BadRequest('The user is no longer your friend')
-
   const friend = await User.findById(friendId)
   if (!friend) throw httpErrors.NotFound('Cannot find the user')
-
+  
+  if (!user.friends.includes(friendId)) throw httpErrors.BadRequest('The user is no longer your friend')
+  
   // STEP1: Delete friend from user's friends
   try {
     user.friends.pull(friendId)
@@ -283,30 +279,7 @@ export const deleteFriend = async (req, res) => {
       throw httpErrors.InternalServerError('Could not delete the user from friends')
     }
   }
-
-  // ?
-  // STEP3: Check user's todolists shared with friend and edit members
-  for (const todolistId of user.todolists) {
-    const sharedList = await Todolist.find({ _id: todolistId, members: { _id: { $in: [user._id, friendId] } } })
-    // check if there is any other members with admin right
-    let otherMemberIsAdmin = false
-    for (const m of sharedList.members) {
-      if (m.isAdmin && m._id !== user._id && m._id !== friendId) {
-        otherMemberIsAdmin = true
-      }
-    }
-    // If user is owner and no one else sharing the todolist is admin, delete friend from member
-    if (sharedList.owner === user._id && !otherMemberIsAdmin) {
-      sharedList.members.pull(friend)
-    }
-
-    // If friend is owner and no one else sharing the todolist is admin, delete user from member
-    if (sharedList.owner === friendId && !otherMemberIsAdmin) {
-      sharedList.members.pull(user)
-    }
-
-    sharedList.save()
-  }
+  // If user and friend are sharing todolists, deleting of member should be done manually
 
   res.status(200).json(user.friends)
 }

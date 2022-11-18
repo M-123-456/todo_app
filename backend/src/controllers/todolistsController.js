@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
-import Todolist from '../models/Todolist.js'
 import httpErrors from 'http-errors'
+import Todolist from '../models/Todolist.js'
+import User from '../models/User.js'
 
 /** @type {import("express").RequestHandler} */
 export const getAllTodolists = async (req, res) => {
@@ -8,7 +9,7 @@ export const getAllTodolists = async (req, res) => {
 
   const todolists = await Todolist.find().where('user').equals(user._id)
 
-  res.status(200).send(todolists)
+  res.status(200).json(todolists)
 }
 
 // Create a new todolist of the login user
@@ -29,7 +30,6 @@ export const createTodolist = async (req, res) => {
       position: todolistCount > 0 ? todolistCount : 0,
       members: [{
         _id: userId,
-        isEdit: true,
         isAdmin: true
       }]
     })
@@ -48,43 +48,71 @@ export const createTodolist = async (req, res) => {
     throw httpErrors.InternalServerError('Todolist could not be created. Please try later!')
   }
 
-  res.status(201).send(newTodolist)
+  res.status(201).json(newTodolist)
 }
 
 /** @type {import("express").RequestHandler} */
 export const getTodolistById = async (req, res) => {
-  const listId = req.params.listId
-  const todolist = await Todolist.findById(listId)
+  const todolist = req.todolist
 
-  res.status(200).send(todolist)
+  res.status(200).json(todolist)
 }
 
 // Update of icon, title
 /** @type {import("express").RequestHandler} */
 export const updateTodoList = async (req, res) => {
-  const listId = req.params.listId
-
-  const todolist = await Todolist.findById(listId)
+  const todolist = req.todolist
 
   for (const key in req.body) {
     todolist[key] = req.body[key]
   }
   await todolist.save()
 
-  res.status(200).send(todolist)
+  res.status(200).json(todolist)
+}
+
+/** @type {import("express").RequestHandler} */
+export const deleteTodoList = async (req, res) => {
+  const user = req.user
+  const todolist = req.todolist
+
+  // STEP1: delete todolist id from members todolists array
+  try {
+    todolist.members.forEach(async m => {
+      const member = await User.findById(m._id)
+      member.todolists.pull(todolist._id)
+      await member.save()
+    })
+  } catch (err) {
+    throw httpErrors.InternalServerError('Something went wrong! Please try later.')
+  }
+
+  // STEP2: delete todolist
+  try {
+    await Todolist.deleteOne().where('_id').equals(todolist._id)
+  } catch (err) {
+    // If error occurs, cancel STEP1 and throw error
+    console.log(err)
+    todolist.members.forEach(async m => {
+      const member = await User.findById(m._id)
+      member.todolists.push(todolist._id)
+      await user.save()
+    })
+    throw httpErrors.InternalServerError('Something went wrong! Please try later.')
+  }
+
+  //! todolists not updated
+  res.status(200).json(user.todolists)
 }
 
 // SHARING MEMBERS //
 /** @type {import("express").RequestHandler} */
 export const getMembers = async (req, res) => {
-  const listId = req.params.listId
+  const todolist = req.todolist
 
-  const todolist = await Todolist.findById(listId)
-
-  res.status(200).send(todolist.members)
+  res.status(200).json(todolist.members)
 }
 
-// ! mongodb searching object in array
 /** @type {import("express").RequestHandler} */
 export const addMembers = async (req, res) => {
   const member = req.member
@@ -106,7 +134,7 @@ export const addMembers = async (req, res) => {
       member.todolists.push(todolist)
       await member.save()
     } catch (err) {
-      // If error occurs, cancel STEP1 and send error
+      // If error occurs, cancel STEP1 and json error
       todolist.members.pull(member)
       await todolist.save()
       throw httpErrors.InternalServerError('Could not share the todolist with the selected friend')
@@ -118,9 +146,12 @@ export const addMembers = async (req, res) => {
 
 /** @type {import("express").RequestHandler} */
 export const toggleAdminRight = async (req, res) => {
+  const user = req.user
   const todolist = req.todolist
   const member = req.member
   const isMember = req.isMember
+
+  if (member._id === user._id) throw httpErrors.BadRequest('You are trying to edit your admin right')
 
   if (!isMember) throw httpErrors.BadRequest('The user is not sharing this todolist')
 
@@ -131,26 +162,7 @@ export const toggleAdminRight = async (req, res) => {
       todolist.save()
     }
   }
-  res.status(200).send(todolist.members)
-}
-
-/** @type {import("express").RequestHandler} */
-export const toggleEditRight = async (req, res) => {
-  const todolist = req.todolist
-  const member = req.member
-  const isMember = req.isMember
-
-  if (!isMember) throw httpErrors.BadRequest('The user is not sharing this todolist')
-
-  // If the 'member' is already sharing the todolist, respond with below message
-  for (const m of todolist.members) {
-    if (m._id.valueOf() === member._id.valueOf()) {
-      m.isEdit = !m.isEdit
-      todolist.save()
-    }
-  }
-
-  res.status(200).send(todolist.members)
+  res.status(200).json(todolist.members)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -176,7 +188,7 @@ export const deleteMembers = async (req, res) => {
       member.todolists.pull(todolist)
       await member.save()
     } catch (err) {
-      // if error occurs, cancel STEP1 and send error
+      // if error occurs, cancel STEP1 and json error
       todolist.members.push(member)
       await todolist.save()
       throw httpErrors.InternalServerError('Could not share the todolist with the selected friend')

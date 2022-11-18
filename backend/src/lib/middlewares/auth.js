@@ -16,28 +16,26 @@ const auth = async (req, res, next) => {
   next()
 }
 
-export const authSingleTodolist = (req, res, next) => {
+export const authSingleTodolist = async (req, res, next) => {
   const user = req.user
   const listId = req.params.listId
 
+  const todolist = await Todolist.findById(listId)
+  if (!todolist) throw httpErrors.BadRequest('The todolist does not exist')
+
   if (!user.todolists.includes(listId)) throw httpErrors.Unauthorized('You are not authorized to view this todolist')
 
+  req.todolist = todolist
   next()
 }
 
 export const authAdmin = async (req, res, next) => {
   const user = req.user
-  const listId = req.params.listId
+  const todolist = req.todolist
 
-  const todolist = await Todolist.findById(listId)
+  const userAsMember = todolist.members.find(m => m._id.valueOf() === user._id.valueOf())
 
-  if (!todolist) throw httpErrors.NotFound()
-
-  const userIsAdmin = !!todolist.members.find(m => {
-    return m._id.valueOf() === user._id.valueOf()
-  })
-
-  if (!userIsAdmin) throw httpErrors.Unauthorized('You are not allowed to edit members')
+  if (!userAsMember.isAdmin) throw httpErrors.Unauthorized('You are not authorized to the action')
 
   req.todolist = todolist
   next()

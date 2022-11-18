@@ -11,6 +11,7 @@
         "sourceType": "module"
     },
     "rules": {
-        "quotes" : "off"
+        "quotes" : "off",
+        "no-trailing-spaces": "off"
     }
 }

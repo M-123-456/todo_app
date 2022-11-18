@@ -17,6 +17,7 @@ router.route('/')
 router.route('/:listId')
   .get(auth, authSingleTodolist, controller.getTodolistById)
   .patch(auth, authSingleTodolist, validations.update, controller.updateTodoList)
+  .delete(auth, authSingleTodolist, authAdmin, controller.deleteTodoList)
 
 // Single todolist > members
 router.get(
@@ -45,16 +46,6 @@ router.patch(
   validate.memberExists,
   validate.isMember,
   controller.toggleAdminRight
-)
-
-router.patch(
-  '/:listId/update-edit-member',
-  auth,
-  authSingleTodolist,
-  authAdmin,
-  validate.memberExists,
-  validate.isMember,
-  controller.toggleEditRight
 )
 
 router.patch(

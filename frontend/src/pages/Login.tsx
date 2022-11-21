@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import AuthInput from "../components/AuthInput";
+import AuthInput from "../components/forms/AuthInput";
 
 
 type Props = {};
@@ -12,8 +12,8 @@ const Login = (props: Props) => {
         <div className="p-5 lg:p-6 grow w-full">
           <div className="sm:p-5 lg:px-10 lg:py-8">
             <form className="space-y-6">
-              <AuthInput type="text" content="name" />
-              <AuthInput type="password" content="password" />
+              {/* <AuthInput type="email" content="email" /> */}
+              {/* <AuthInput type="password" content="password" /> */}
               <div>
                 <button
                   type="submit"

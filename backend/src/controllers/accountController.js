@@ -12,13 +12,13 @@ export const signup = async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict'
+    sameSite: 'lax'
   }
 
   res
     .cookie('token', token, cookieOptions)
     .status(201)
-    .json(token)
+    .json(user)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -38,7 +38,7 @@ export const login = async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict'
+    sameSite: 'lax'
   }
 
   res

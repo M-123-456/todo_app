@@ -8,7 +8,6 @@ import './src/db/db.js'
 import accountRoute from './src/routes/accountRouter.js'
 import usersRoute from './src/routes/usersRouter.js'
 import todolistsRoute from './src/routes/todolistsRouter.js'
-import todosRoute from './src/routes/todosRouter.js'
 
 const app = express()
 
@@ -19,7 +18,7 @@ app.use(cookieParser())
 const corsOptions = {
   origin: 'http://localhost:3000',
   optionsSuccessStatus: 200,
-  crudentials: true
+  credentials: true
 }
 app.use(cors(corsOptions))
 
@@ -27,7 +26,6 @@ app.use(cors(corsOptions))
 app.use('/api/v1/account', accountRoute)
 app.use('/api/v1/users', usersRoute)
 app.use('/api/v1/todolists', todolistsRoute)
-app.use('/api/v1/todolists', todosRoute)
 
 // 404 error handling
 app.use((req, res, next) => {

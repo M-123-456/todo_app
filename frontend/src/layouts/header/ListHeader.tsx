@@ -5,13 +5,14 @@ import { AiFillEdit } from "react-icons/ai";
 import { GrSave } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 
-import IconButton from "./IconButton";
+import IconButton from "../../components/ui/buttons/IconButton";
 
 type Props = {
   location: string;
 };
 
 const ListHeader: React.FC<Props> = ({ location }) => {
+  console.log(location)
   const navigate = useNavigate();
 
   const handleAddTodolist = () => {};
@@ -35,7 +36,7 @@ const ListHeader: React.FC<Props> = ({ location }) => {
   };
 
   // location = overview => show icons on right side (plus, user, logout)
-  if (location === "overview") {
+  if (location === "/") {
     return (
       <div className="flex items-center ml-auto space-x-3">
         <IconButton size="text-2xl md:text-3xl" onClick={handleAddTodolist}>

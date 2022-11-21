@@ -1,9 +1,13 @@
+import React from "react";
+
 type Props = {
     type: string,
     content: string,
+    value: string,
+    onChange: (e:React.FormEvent<HTMLInputElement>) => void;
 }
 
-const AuthInput: React.FC<Props> = ({ type, content }) => {
+const AuthInput: React.FC<Props> = ({ type, content, value, onChange }) => {
   return (
     <div className="space-y-1">
       <label htmlFor={content} className="font-medium">
@@ -15,6 +19,8 @@ const AuthInput: React.FC<Props> = ({ type, content }) => {
         id={content}
         name={content}
         placeholder={`Enter your ${content}`}
+        value={value}
+        onChange={onChange}
       />
     </div>
   );

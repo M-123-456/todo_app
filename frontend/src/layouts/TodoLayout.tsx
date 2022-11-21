@@ -1,5 +1,5 @@
 import BaseLayout from "./BaseLayout";
-import ListHeader from "../components/ListHeader";
+import ListHeader from "./header/ListHeader";
 import { Outlet, useLocation } from "react-router-dom";
 
 type Props = {};

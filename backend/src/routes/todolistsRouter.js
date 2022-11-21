@@ -16,12 +16,19 @@ router.route('/')
 // Single todolist
 router.route('/:listId')
   .get(auth, authSingleTodolist, controller.getTodolistById)
-  .patch(auth, authSingleTodolist, ...validations.update, controller.updateTodoList)
+  .patch(auth, authSingleTodolist, validations.update, controller.updateTodoList)
   .delete(auth, authSingleTodolist, authAdmin, controller.deleteTodoList)
 
 // Single todolist > todo
-router.patch('/:listId/add-todo', auth, authSingleTodolist, controller.addTodo)
-router.patch('/:listId/update-todo', auth, authSingleTodolist, controller.updateTodo)
+router.patch(
+  '/:listId/add-todo', 
+  auth, 
+  authSingleTodolist,
+  validations.addTodo,
+  controller.addTodo
+)
+router.patch('/:listId/update-todo', auth, authSingleTodolist, validations.updateTodo, controller.updateTodo)
+router.patch('/:listId/toggle-complete', auth, authSingleTodolist, validations.updateIsComplete, controller.toggleComplete)
 router.patch('/:listId/delete-todo', auth, authSingleTodolist, controller.deleteTodo)
 router.delete(':/listId/delete-all-todos', auth, authSingleTodolist, controller.deleteAllTodos)
 

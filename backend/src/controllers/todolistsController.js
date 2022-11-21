@@ -122,7 +122,46 @@ export const updateTodo = async (req, res) => {
   const todolist = req.todolist
   const todo = req.body.todo
 
-  todolist.todos.push(todo)
+  const matchedTodo = todolist.todos.find(item => item._id === todo._id)
+  if (!matchedTodo) throw httpErrors.NotFound()
+
+  const updatedTodos = todolist.todos.map(item => {
+    if (item._id === todo._id) {
+      return {
+        ...item,
+        todo: todo.todo
+      }
+    } else {
+      return item
+    }
+  })
+
+  todolist.todos = updatedTodos
+  await todolist.save()
+
+  res.status(200).json(todolist)
+}
+
+/** @type {import("express").RequestHandler} */
+export const toggleComplete = async (req, res) => {
+  const todolist = req.todolist
+  const todo = req.body.todo
+
+  const matchedTodo = todolist.todos.find(item => item._id === todo._id)
+  if (!matchedTodo) throw httpErrors.NotFound()
+
+  const updatedTodos = todolist.todos.map(item => {
+    if (item._id === todo._id) {
+      return {
+        ...item,
+        isComplete: todo.isComplete
+      }
+    } else {
+      return item
+    }
+  })
+
+  todolist.todos = updatedTodos
   await todolist.save()
 
   res.status(200).json(todolist)
@@ -131,9 +170,12 @@ export const updateTodo = async (req, res) => {
 /** @type {import("express").RequestHandler} */
 export const deleteTodo = async (req, res) => {
   const todolist = req.todolist
-  const todo = req.body.todo
+  const todoId = req.body.todoId
 
-  todolist.todos.push(todo)
+  const matchedTodo = todolist.todos.find(item => item._id === todoId)
+  if (!matchedTodo) throw httpErrors.NotFound()
+
+  todolist.todos.pull(todoId)
   await todolist.save()
 
   res.status(200).json(todolist)

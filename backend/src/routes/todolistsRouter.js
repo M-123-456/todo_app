@@ -16,7 +16,7 @@ router.route('/')
 // Single todolist
 router.route('/:listId')
   .get(auth, authSingleTodolist, controller.getTodolistById)
-  .patch(auth, authSingleTodolist, validations.update, controller.updateTodoList)
+  .patch(auth, authSingleTodolist, ...validations.update, controller.updateTodoList)
   .delete(auth, authSingleTodolist, authAdmin, controller.deleteTodoList)
 
 // Single todolist > members

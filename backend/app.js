@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import 'express-async-errors'
 import httpErrors from 'http-errors'
+import cookieParser from 'cookie-parser'
 
 import './src/db/db.js'
 import accountRoute from './src/routes/accountRouter.js'
@@ -12,11 +13,13 @@ import todosRoute from './src/routes/todosRouter.js'
 const app = express()
 
 app.use(express.json())
+app.use(cookieParser())
 
 // Cors
 const corsOptions = {
   origin: 'http://localhost:3000',
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  crudentials: true
 }
 app.use(cors(corsOptions))
 

@@ -6,6 +6,7 @@ const Schema = mongoose.Schema({
   title: { type: String, default: '' },
   position: { type: Number },
   todos: [{
+    _id: { type: mongoose.Types.ObjectId },
     todo: { type: String, unique: true },
     isCompleted: { type: Boolean, default: false, required: true }
   }],

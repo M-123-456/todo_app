@@ -3,7 +3,7 @@ import User from '../../models/User.js'
 import Todolist from '../../models/Todolist.js'
 
 const auth = async (req, res, next) => {
-  const token = req.headers['x-auth']
+  const token = req.cookies.token
 
   if (!token) throw httpErrors.Unauthorized()
 
@@ -12,7 +12,6 @@ const auth = async (req, res, next) => {
   if (!user) throw httpErrors.Unauthorized()
 
   req.user = user
-  req.token = token
   next()
 }
 

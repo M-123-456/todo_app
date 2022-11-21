@@ -8,7 +8,17 @@ export const signup = async (req, res) => {
   const user = await new User(req.body)
   const token = await user.generateToken()
   await user.save()
-  res.status(201).json(token)
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict'
+  }
+
+  res
+    .cookie('token', token, cookieOptions)
+    .status(201)
+    .json(token)
 }
 
 /** @type {import("express").RequestHandler} */
@@ -25,19 +35,28 @@ export const login = async (req, res) => {
   const token = await user.generateToken()
   await user.save()
 
-  res.status(200).json(token)
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict'
+  }
+
+  res
+    .cookie('token', token, cookieOptions)
+    .status(200).json(token)
 }
 
 /** @type {import("express").RequestHandler} */
 export const logout = async (req, res) => {
   const user = req.user
-  const token = req.token
+  const token = req.cookies.token
 
-  await user.tokens.pull(token)
-
+  user.tokens.pull(token)
   await user.save()
 
-  res.status(204).json()
+  res
+    .clearCookie('token')
+    .status(204).json()
 }
 
 /** @type {import("express").RequestHandler} */
@@ -46,5 +65,7 @@ export const deleteAccount = async (req, res) => {
 
   await User.deleteOne().where('_id').equals(user._id)
 
-  res.status(202).json()
+  res
+    .clearCookie('token')
+    .status(202).json()
 }

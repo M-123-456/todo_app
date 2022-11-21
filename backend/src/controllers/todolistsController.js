@@ -105,6 +105,50 @@ export const deleteTodoList = async (req, res) => {
   res.status(200).json(user.todolists)
 }
 
+// TODOS //
+/** @type {import("express").RequestHandler} */
+export const addTodo = async (req, res) => {
+  const todolist = req.todolist
+  const todo = req.body.todo
+
+  todolist.todos.push(todo)
+  await todolist.save()
+
+  res.status(200).json(todolist)
+}
+
+/** @type {import("express").RequestHandler} */
+export const updateTodo = async (req, res) => {
+  const todolist = req.todolist
+  const todo = req.body.todo
+
+  todolist.todos.push(todo)
+  await todolist.save()
+
+  res.status(200).json(todolist)
+}
+
+/** @type {import("express").RequestHandler} */
+export const deleteTodo = async (req, res) => {
+  const todolist = req.todolist
+  const todo = req.body.todo
+
+  todolist.todos.push(todo)
+  await todolist.save()
+
+  res.status(200).json(todolist)
+}
+
+/** @type {import("express").RequestHandler} */
+export const deleteAllTodos = async (req, res) => {
+  const todolist = req.todolist
+
+  todolist.todos = []
+  await todolist.save()
+
+  res.status(200).json(todolist)
+}
+
 // SHARING MEMBERS //
 /** @type {import("express").RequestHandler} */
 export const getMembers = async (req, res) => {

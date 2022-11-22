@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from 'axios'
-import { Link } from "react-router-dom";
 
-import AuthInput from "../components/forms/AuthInput";
+import AccountInput from "../components/forms/AccountInput";
 import useStore from '../store'
+import { IaccountInput } from '../types'
+
 
 type Props = {};
 
-interface IinputData {
-  username: string;
-  email: string;
-  password: string
-}
+
 
 const Signup = (props: Props) => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<string[]>([])
-  const [inputData, setInputData] = useState<IinputData>({
+  const [inputData, setInputData] = useState<IaccountInput>({
     username:'',
     email: '',
     password: ''
@@ -36,11 +33,10 @@ const Signup = (props: Props) => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const url = 'http://localhost:5000/api/v1/account/signup'
-
     setLoading(true)
     try {
-      const response = await axios.post(url, inputData)
+      const response = await axios.post('http://localhost:5000/api/v1/account/signup', inputData, {withCredentials: true})
+      console.log(response)
 
       if (response.status === 201) {
         const _user = await response.data
@@ -51,14 +47,19 @@ const Signup = (props: Props) => {
       }
     } catch (err: any) {
       const errors = []
-      if (err.response.status === 400) {
-        for(const error of err.response.data.message) 
+      if (err.response.status === 400 ) {
+        for(const error of err.response.data.message) {
           for(const key in error) {
             errors.push(`${error[key]}`)
           }
           setLoading(false)
           setErrors(errors)
-      } else {
+        }
+      } else if(err.response.status === 401) {
+        setLoading(false)
+        setErrors(['Email or password incorrect'])
+      }
+      else {
         setLoading(false)
         setErrors(['Something went wrong'])
       }
@@ -80,19 +81,19 @@ const Signup = (props: Props) => {
         <div className="p-5 lg:p-6 grow w-full">
           <div className="sm:p-5 lg:px-10 lg:py-8">
             <form className="space-y-6" onSubmit={handleSignUp}>
-              <AuthInput 
+              <AccountInput 
                 type="text" 
                 content="username" 
                 value={inputData.username}
                 onChange={handleOnChange} 
               />
-              <AuthInput 
+              <AccountInput 
                 type="email" 
                 content="email" 
                 value={inputData.email} 
                 onChange={handleOnChange} 
               />
-              <AuthInput 
+              <AccountInput 
                 type="password" 
                 content="password" 
                 value={inputData.password} 

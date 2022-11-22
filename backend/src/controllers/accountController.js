@@ -43,7 +43,8 @@ export const login = async (req, res) => {
 
   res
     .cookie('token', token, cookieOptions)
-    .status(200).json(token)
+    .status(200)
+    .json(user)
 }
 
 /** @type {import("express").RequestHandler} */

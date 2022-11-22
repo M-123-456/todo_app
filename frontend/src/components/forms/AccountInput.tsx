@@ -7,7 +7,7 @@ type Props = {
     onChange: (e:React.FormEvent<HTMLInputElement>) => void;
 }
 
-const AuthInput: React.FC<Props> = ({ type, content, value, onChange }) => {
+const AccountInput: React.FC<Props> = ({ type, content, value, onChange }) => {
   return (
     <div className="space-y-1">
       <label htmlFor={content} className="font-medium">
@@ -26,4 +26,4 @@ const AuthInput: React.FC<Props> = ({ type, content, value, onChange }) => {
   );
 }
 
-export default AuthInput
+export default AccountInput

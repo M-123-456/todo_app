@@ -27,3 +27,9 @@ interface IMember {
     _id: string;
     isAdmin: boolean
 }
+
+export interface IaccountInput {
+  username: string;
+  email: string;
+  password: string
+}

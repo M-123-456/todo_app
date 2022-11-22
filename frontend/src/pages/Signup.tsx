@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { Link } from "react-router-dom";
 
@@ -7,10 +8,17 @@ import useStore from '../store'
 
 type Props = {};
 
+interface IinputData {
+  username: string;
+  email: string;
+  password: string
+}
+
 const Signup = (props: Props) => {
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState([])
-  const [inputData, setInputData] = useState({
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState<boolean>(true)
+  const [errors, setErrors] = useState<string[]>([])
+  const [inputData, setInputData] = useState<IinputData>({
     username:'',
     email: '',
     password: ''
@@ -28,26 +36,47 @@ const Signup = (props: Props) => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const url = 'http://localhost:3001/api/v1/account/signup'
+    const url = 'http://localhost:5000/api/v1/account/signup'
 
     setLoading(true)
     try {
       const response = await axios.post(url, inputData)
-      console.log(response)
-      setLoading(false)
-    } catch (err) {
-      console.log(err)
-      setLoading(false)
+
+      if (response.status === 201) {
+        const _user = await response.data
+        setErrors([])
+        setLoading(false)
+        setUser(_user)
+        navigate('/', {replace: true})
+      }
+    } catch (err: any) {
+      const errors = []
+      if (err.response.status === 400) {
+        for(const error of err.response.data.message) 
+          for(const key in error) {
+            errors.push(`${error[key]}`)
+          }
+          setLoading(false)
+          setErrors(errors)
+      } else {
+        setLoading(false)
+        setErrors(['Something went wrong'])
+      }
     }
-
-
   }
 
+  if (loading) {
+    return (
+      <div className="flex rounded shadow-sm bg-white overflow-hidden justify-center items-center min-h-[30rem]">
+       <div>Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <>
       {/* Sign In Form */}
-      <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden">
+      <div className="flex flex-col rounded shadow-sm bg-white overflow-hidden min-h-[30rem]">
         <div className="p-5 lg:p-6 grow w-full">
           <div className="sm:p-5 lg:px-10 lg:py-8">
             <form className="space-y-6" onSubmit={handleSignUp}>
@@ -70,6 +99,16 @@ const Signup = (props: Props) => {
                 onChange={handleOnChange} 
               />
               <div>
+                {
+                  errors.map(error => (
+                    <div 
+                      key={error}
+                      className="text-red-700 font-semibold"
+                    >
+                      {error}
+                    </div>
+                  ))
+                }
                 <button
                   className="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none w-full px-4 py-3 leading-6 rounded border-blue-700 bg-blue-700 text-white hover:text-white hover:bg-blue-800 hover:border-blue-800 focus:ring focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-700 active:border-blue-700"
                 >

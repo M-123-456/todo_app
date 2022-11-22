@@ -16,7 +16,7 @@ export const signup = [
     }),
   body('email')
     .normalizeEmail()
-    .isEmail()
+    .isEmail().withMessage('Invalid Email')
     .custom(async email => {
       const user = await User.findByEmail(email)
       if (user) {

@@ -28,8 +28,14 @@ interface IMember {
     isAdmin: boolean
 }
 
-export interface IaccountInput {
+export interface IAccountInput {
   username: string;
   email: string;
   password: string
+}
+
+export interface IFriend {
+    _id: string;
+    username: string;
+    avatar: string;
 }

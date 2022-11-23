@@ -1,20 +1,30 @@
 import { useState } from 'react'
 import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io'
+import Search from '../components/forms/Search'
 import CurrentFriends from '../components/friends/CurrentFriends'
-import Requests from '../components/friends/Requests'
+import Requests from '../components/friends/requests/Requests'
 
 type Props = {}
 
 const Friends = (props: Props) => {
   const [showFriends, setShowFriends] = useState(false)
   const [showRequests, setShowRequests] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
 
   return (
-      <div className="py-8 mt-6 lg:py-0 w-full">
+      <div className="flex flex-col py-8 mt-6 lg:py-0 w-full">
         {/* search bar */}
+        <Search 
+          className="self-center bg-white px-2 py-1 shadow drop-shadow-xl"
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
+        {
+
+        }
 
         <ul
-          className="space-y-3"
+          className="space-y-3 mt-5"
         >
 
           {/* Friends */}

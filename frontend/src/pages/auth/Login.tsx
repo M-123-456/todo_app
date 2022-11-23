@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react' 
 import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/forms/AccountInput";
-import { IaccountInput } from '../../types'
+import { IAccountInput } from '../../types'
 import useStore from '../../store'
 
 
@@ -12,7 +12,7 @@ const Login = (props: Props) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<string[]>([])
-  const [inputData, setInputData] = useState<Omit<IaccountInput, 'username'>>({
+  const [inputData, setInputData] = useState<Omit<IAccountInput, 'username'>>({
     email: '',
     password: ''
   })

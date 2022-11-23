@@ -33,7 +33,7 @@ const FriendsSearch = (props: Props) => {
   const [matchedFriends, setMatchedFriends] = useState<IFriend[] | undefined>([])
 
   useEffect(() => {
-    const matched = DUMMY.filter(item => item.username.includes(props.searchInput))
+    const matched = DUMMY.filter(item => item.username.toLowerCase().includes(props.searchInput.toLowerCase()))
     setMatchedFriends(matched)
   },[props.searchInput])
 
@@ -44,7 +44,7 @@ const FriendsSearch = (props: Props) => {
         className="mt-6 flex flex-wrap bg-white py-6 px-7 gap-3 rounded shadow-sm"
     >
       {
-        DUMMY.map(item => (
+        matchedFriends?.map(item => (
           <MatchedFriendCard 
             item={item}
             key={item._id}

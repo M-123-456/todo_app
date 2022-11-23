@@ -9,7 +9,7 @@ type Props = {}
 const LogoutButton = (props: Props) => {
   const navigate = useNavigate()
   const handleLogout = () => {
-    navigate('/', {replace: true})
+    navigate('/login', {replace: true})
   }
 
   return (

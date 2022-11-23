@@ -8,9 +8,8 @@ type Props = {
 
 const Search = (props: Props) => {
   
-  const handleChange = (e: React.BaseSyntheticEvent<Event, EventTarget & HTMLInputElement, EventTarget>) => {
-    // !
-    props.setSearchInput('input')
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    props.setSearchInput(e.target.value)
   }
 
   return (
@@ -18,10 +17,11 @@ const Search = (props: Props) => {
         className={props.className}
     >
         <input 
-            type="text" 
-            placeholder="input name to search"
-            value={props.searchInput}
-            onChange={handleChange}
+          className="focus:outline-none"
+          type="text" 
+          placeholder="input name to search"
+          value={props.searchInput}
+          onChange={handleChange}
         />
     </div>
   )

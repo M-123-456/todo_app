@@ -2,13 +2,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Components
 import AuthLayout from "./layouts/AuthLayout";
-import Overview from "./pages/Overview";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Overview from "./pages/todolist/Overview";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
 import TodoLayout from "./layouts/TodoLayout";
-import Profile from "./pages/Profile";
-import SingleTodolist from "./pages/SingleTodolist";
-import EditProfile from "./pages/EditProfile";
+import Profile from "./pages/profile/Profile";
+import SingleTodolist from "./pages/todolist/SingleTodolist";
+import EditProfile from "./pages/profile/EditProfile";
+import Friends from './pages/Friends'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="todolist/:listId" element={<SingleTodolist />} />
           <Route path="profile" element={<Profile />} />
           <Route path="profile/edit" element={<EditProfile />} />
+          <Route path="friends" element={<Friends />} />
         </Route>
       </Routes>
     </BrowserRouter>

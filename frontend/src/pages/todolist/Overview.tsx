@@ -1,4 +1,4 @@
-import OverviewItem from "../components/OverviewItem";
+import OverviewItem from "../../components/listItem/OverviewItem";
 
 type Props = {};
 
@@ -24,13 +24,13 @@ const DUMMY_TODOLIST = [
 const Overview = (props: Props) => {
   return (
     <div>
-      {/* List Group with badges */}
+      {/* List Group */}
       <ul className="mt-4 border border-gray-200 rounded bg-white divide-y divide-gray-200">
         {DUMMY_TODOLIST.map((item) => (
           <OverviewItem key={item._id} title={item.title} id={item._id} />
         ))}
       </ul>
-      {/* END List Group with badges */}
+      {/* END List Group */}
     </div>
   );
 };

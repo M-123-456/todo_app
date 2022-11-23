@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react' 
 import { Link, useNavigate } from "react-router-dom";
-import AccountInput from "../components/forms/AccountInput";
-import { IaccountInput } from '../types'
-import useStore from '../store'
+import AccountInput from "../../components/forms/AccountInput";
+import { IaccountInput } from '../../types'
+import useStore from '../../store'
 
 
 type Props = {};
@@ -42,9 +42,8 @@ const Login = (props: Props) => {
         navigate('/', {replace: true})
       }
     } catch (err: any) {
-      console.log(err)
-      const errors = []
-      if (err.response.status === 400) {
+      const errors:string[] = []
+      if (err.response.status === 400)  {
         for(const error of err.response.data.message) {
           for (const key in error) {
             errors.push(`${error[key]}`)
@@ -52,10 +51,11 @@ const Login = (props: Props) => {
           setLoading(false)
           setErrors(errors)
         } 
-      } else if(err.response.status === 401) {
+      } else if (err.response.status === 401) {
         setLoading(false)
         setErrors(['Email or password incorrect'])
-      } else {
+      }
+      else {
         setLoading(false)
         setErrors(['Something went wrong'])
       }

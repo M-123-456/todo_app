@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios'
 
-import AccountInput from "../components/forms/AccountInput";
-import useStore from '../store'
-import { IaccountInput } from '../types'
-
+import AccountInput from "../../components/forms/AccountInput";
+import useStore from '../../store'
+import { IaccountInput } from '../../types'
+import useAuth from '../../hooks/useAuth'
 
 type Props = {};
-
-
 
 const Signup = (props: Props) => {
   const navigate = useNavigate()
@@ -33,10 +31,10 @@ const Signup = (props: Props) => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    
     setLoading(true)
     try {
       const response = await axios.post('http://localhost:5000/api/v1/account/signup', inputData, {withCredentials: true})
-      console.log(response)
 
       if (response.status === 201) {
         const _user = await response.data
@@ -47,7 +45,7 @@ const Signup = (props: Props) => {
       }
     } catch (err: any) {
       const errors = []
-      if (err.response.status === 400 ) {
+      if (err.response.status === 400 || err.response.status === 401) {
         for(const error of err.response.data.message) {
           for(const key in error) {
             errors.push(`${error[key]}`)
@@ -55,9 +53,6 @@ const Signup = (props: Props) => {
           setLoading(false)
           setErrors(errors)
         }
-      } else if(err.response.status === 401) {
-        setLoading(false)
-        setErrors(['Email or password incorrect'])
       }
       else {
         setLoading(false)

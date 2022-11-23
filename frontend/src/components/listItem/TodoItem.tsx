@@ -1,6 +1,6 @@
 import { BsCheck2Circle } from "react-icons/bs";
 import { BsTrash } from "react-icons/bs";
-import IconButton from "./ui/buttons/IconButton";
+import IconButton from "../ui/buttons/IconButton";
 
 type Props = {
   todo: string;

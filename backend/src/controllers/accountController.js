@@ -26,11 +26,11 @@ export const login = async (req, res) => {
   const { email, password } = req.body
   const user = await User.findByEmail(email)
 
-  if (!user) throw httpErrors.Unauthorized()
+  if (!user) throw httpErrors.Unauthorized('Email or password incorrect')
 
   const correctPassword = await bcrypt.compare(password, user.password)
 
-  if (!correctPassword) throw httpErrors.Unauthorized()
+  if (!correctPassword) throw httpErrors.Unauthorized('Email or password incorrect')
 
   const token = await user.generateToken()
   await user.save()

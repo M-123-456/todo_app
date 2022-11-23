@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 
 // General error handling
 app.use((error, req, res, next) => {
-  res.status(error.status || 505).json({ message: error.message })
+  res.status(error.status || 505).json([{ message: error.message }])
 })
 
 app.listen(process.env.PORT, () => {

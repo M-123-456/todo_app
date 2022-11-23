@@ -1,4 +1,4 @@
-import TodoItem from "../components/TodoItem";
+import TodoItem from "../../components/listItem/TodoItem";
 
 type Props = {};
 
@@ -26,6 +26,7 @@ const DUMMY_TODOS = [
 ];
 
 const SingleTodolist = (props: Props) => {
+
   return (
     <div>
       {/* List Group with badges */}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io'
 import Search from '../components/forms/Search'
 import CurrentFriends from '../components/friends/CurrentFriends'
+import FriendsSearch from '../components/friends/search/FriendsSearch'
 import Requests from '../components/friends/requests/Requests'
 
 type Props = {}
@@ -20,7 +21,10 @@ const Friends = (props: Props) => {
           setSearchInput={setSearchInput}
         />
         {
-
+          searchInput !== '' && 
+          <FriendsSearch 
+            searchInput={searchInput}
+          />
         }
 
         <ul

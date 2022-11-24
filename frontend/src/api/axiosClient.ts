@@ -19,7 +19,7 @@ axiosClient.interceptors.request.use(async(config) => {
 
 // Add a response interceptor
 axiosClient.interceptors.response.use((response) => {
-    return response.data
+    return response
 }, (err) => {
     throw err.response
 }) 

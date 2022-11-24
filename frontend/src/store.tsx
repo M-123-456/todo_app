@@ -1,4 +1,4 @@
-import {ReactElement} from 'react'
+import { ReactElement } from 'react'
 import { AxiosResponse } from 'axios'
 import create from 'zustand'
 

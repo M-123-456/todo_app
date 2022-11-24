@@ -1,12 +1,14 @@
 import BaseLayout from "./BaseLayout";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
+import useStore from "../store";
 
 type Props = {};
 
 const TodoLayout = (props: Props) => {
   const location = useLocation()
-  console.log(location)
+  const user = useStore(state => state.user)
+  console.log(user)
   
   return (
     <BaseLayout>

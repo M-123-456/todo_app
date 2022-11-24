@@ -1,4 +1,5 @@
 import TodoItem from "../../components/listItem/TodoItem";
+import useStore from "../../store";
 
 type Props = {};
 
@@ -26,6 +27,8 @@ const DUMMY_TODOS = [
 ];
 
 const SingleTodolist = (props: Props) => {
+  const user = useStore(state => state.user)
+  console.log(user)
 
   return (
     <div>

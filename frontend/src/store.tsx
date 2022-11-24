@@ -1,11 +1,15 @@
+import {ReactElement} from 'react'
 import { AxiosResponse } from 'axios'
 import create from 'zustand'
 
 import accountApi from './api/accountApi'
 import userApi from './api/userApi'
+import { getErrorArrays } from './utils/storeErrors'
 
 // types
 import { IUser, IAccountInput } from './types'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface IUseStore {
     user: IUser | null;
@@ -18,7 +22,7 @@ interface IUseStore {
     errors: string[];
     setErrors: (errors: string[]) => void;
     signup: (input: IAccountInput) => void;
-
+    login: (input: Omit<IAccountInput, 'username'>) => void;
 }
 
 const useStore = create<IUseStore>((set, get) => ({
@@ -39,12 +43,7 @@ const useStore = create<IUseStore>((set, get) => ({
             get().setLoading(false)
         } catch (err: any) {
             if(err.status === 400) {
-                const errors: string[] =[]
-                for (const error of err.data[0].message) {
-                    for (const key in error) {
-                        errors.push(error[key])
-                    }
-                }
+                const errors = getErrorArrays(err.data[0].message)
                 get().setErrors(errors)
             } else {
                 get().setErrors(['Something went wrong!'])
@@ -73,20 +72,15 @@ const useStore = create<IUseStore>((set, get) => ({
         get().setErrors([])
         get().setLoading(true)
         try {
-            const response :AxiosResponse<any, any> = await accountApi.signup(input)
+            const response:AxiosResponse<any, any> = await accountApi.signup(input)
             const _user = await response.data
             get().setUser(response.data)
             get().setIsLoggedIn(true)
             get().setLoading(false)
         } catch (err: any) {
-        const errors:string[] = []
             if (err.status === 400)  {
-                for(const error of err.data[0].message) {
-                    for (const key in error) {
-                        errors.push(error[key])
-                    }
-                    get().setErrors(errors)
-                } 
+                const errors = getErrorArrays(err.data[0].message)
+                get().setErrors(errors)
             } 
             else {
                 get().setErrors(['Something went wrong'])
@@ -95,7 +89,51 @@ const useStore = create<IUseStore>((set, get) => ({
             get().setLoading(false)
         }
     },
-    // login
+    login: async(input) => {
+        get().setErrors([])
+        get().setLoading(true)
+        try {
+            const response:AxiosResponse<any, any> = await accountApi.login(input)
+            get().setUser(response.data)
+            get().setIsLoggedIn(true)
+            get().setLoading(false)
+        } catch (err: any) {
+            if (err.status === 400) {
+                const errors = getErrorArrays(err.data[0].message)
+                get().setErrors(errors)
+            }
+            else if (err.status === 401) {
+                get().setErrors(['Email or password incorrect'])
+            } else {
+                get().setErrors(['Something went wrong!'])
+            }
+            get().setIsLoggedIn(false)
+            get().setLoading(false)
+        } 
+    }
 }))
+
+type Props = {
+    children: ReactElement
+}
+
+export function StoreProvider (props:Props) {
+    const navigate = useNavigate()
+    const user = useStore(state => state.user)
+    const isLoggedIn = useStore(state => state.isLoggedIn)
+    const getUser = useStore(state => state.getUser)
+    useEffect(() => {
+        if (!isLoggedIn) getUser()
+    }, [])
+    useEffect(() => {
+        if (user) navigate('/', {replace: true})
+    }, [isLoggedIn])
+    return (
+        <div>
+            {props.children}
+        </div>
+    )
+}
+
 
 export default useStore

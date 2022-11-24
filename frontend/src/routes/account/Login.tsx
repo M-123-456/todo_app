@@ -10,14 +10,17 @@ type Props = {};
 
 const Login = (props: Props) => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState<boolean>(false)
-  const [errors, setErrors] = useState<string[]>([])
+  
   const [inputData, setInputData] = useState<Omit<IAccountInput, 'username'>>({
     email: '',
     password: ''
   })
   const user = useStore(state => state.user)
   const setUser = useStore(state => state.setUser)
+  const login = useStore(state => state.login)
+  const loading = useStore(state => state.loading)
+  const errors = useStore(state => state.errors)
+
 
   const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement
@@ -29,37 +32,7 @@ const Login = (props: Props) => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
-    try {
-      const response = await axios.post('http://localhost:5000/api/v1/account/login', inputData, {withCredentials: true})
-      console.log(response)
-      if (response.status === 200) {
-        console.log('ok')
-        const _user = await response.data
-        setErrors([])
-        setLoading(false)
-        setUser(_user)
-        navigate('/', {replace: true})
-      }
-    } catch (err: any) {
-      const errors:string[] = []
-      if (err.response.status === 400)  {
-        for(const error of err.response.data.message) {
-          for (const key in error) {
-            errors.push(`${error[key]}`)
-          }
-          setLoading(false)
-          setErrors(errors)
-        } 
-      } else if (err.response.status === 401) {
-        setLoading(false)
-        setErrors(['Email or password incorrect'])
-      }
-      else {
-        setLoading(false)
-        setErrors(['Something went wrong'])
-      }
-    }
+    login(inputData)
   }
 
   if (loading) {

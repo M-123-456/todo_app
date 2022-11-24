@@ -3,7 +3,7 @@ import { IAccountInput } from '../types'
 
 const accountApi = {
     signup: (params: IAccountInput) => axiosClient.post('account/signup', params),
-    // login
+    login: (params: { email: string, password: string }) => axiosClient.post('account/login', params)
     // logout
     // delete account
 }

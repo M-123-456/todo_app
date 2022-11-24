@@ -24,7 +24,7 @@ app.use(cors(corsOptions))
 
 // Routes
 app.use('/api/v1/account', accountRoute)
-app.use('/api/v1/users', usersRoute)
+app.use('/api/v1/user', usersRoute)
 app.use('/api/v1/todolists', todolistsRoute)
 
 // 404 error handling

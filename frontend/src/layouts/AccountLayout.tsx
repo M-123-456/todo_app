@@ -11,9 +11,14 @@ const AccountLayout = (props: Props) => {
   const isLoggedIn = useStore(state => state.isLoggedIn)
   const getUser = useStore(state => state.getUser)
 
+  console.log(isLoggedIn, user)
+
   useEffect(() => {
     if (!isLoggedIn) getUser()
-    if (user) navigate('/', {replace: true})
+  }, [])
+
+  useEffect(() => {
+    if (user) navigate('/')
   }, [])
 
 

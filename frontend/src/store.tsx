@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import create from 'zustand'
+
+import accountApi from './api/accountApi'
 
 // types
 import { IUser, IAccountInput } from './types'
@@ -36,13 +38,8 @@ const useStore = create<IUseStore>((set, get) => ({
         set(state => ({ errors: errors }))
     },
     signup: async (input) => {
-
         try {
-            const response = await axios
-            .post('http://localhost:5000/api/v1/account/signup', 
-            input, 
-            {withCredentials: true})
-
+            const response:AxiosResponse<any, any> = await accountApi.signup(input)
             if (response.status === 201) {
                 const _user = await response.data
                 get().setErrors([])
@@ -51,24 +48,21 @@ const useStore = create<IUseStore>((set, get) => ({
             }
         } catch (err: any) {
         const errors:string[] = []
-            if (err.response.status === 400)  {
-                for(const error of err.response.data.message) {
-                for (const key in error) {
-                    errors.push(`${error[key]}`)
-                }
+            if (err.status === 400)  {
+                for(const error of err.data[0].message) {
+                    for (const key in error) {
+                        errors.push(`${error[key]}`)
+                    }
                 get().setLoading(false)
                 get().setErrors(errors)
                 } 
-            } else if (err.response.status === 401) {
-                get().setLoading(false)
-                get().setErrors(['Email or password incorrect'])
-            }
+            } 
             else {
                 get().setLoading(false)
                 get().setErrors(['Something went wrong'])
             }
         }
-    }
+    },
 }))
 
 export default useStore

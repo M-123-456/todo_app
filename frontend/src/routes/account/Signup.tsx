@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from 'axios'
+import { Link } from "react-router-dom";
 
 import AccountInput from "../../components/forms/AccountInput";
 import useStore from '../../store'
@@ -9,10 +8,8 @@ import { IAccountInput } from '../../types'
 type Props = {};
 
 const Signup = (props: Props) => {
-  const navigate = useNavigate()
   const loading = useStore(state => state.loading)
   const errors = useStore(state => state.errors)
-  const user = useStore(state => state.user)
   const signup = useStore(state => state.signup)
   const [inputData, setInputData] = useState<IAccountInput>({
     username:'',

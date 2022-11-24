@@ -1,9 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import useStore from "../store";
 import BaseLayout from "./BaseLayout";
 
 type Props = {};
 
-const AuthLayout = (props: Props) => {
+const AccountLayout = (props: Props) => {
+  const navigate = useNavigate()
+  const user = useStore(state => state.user)
+
+  if (user) navigate('/', {replace: true})
+
   return (
     <>
       <BaseLayout>
@@ -27,4 +34,4 @@ const AuthLayout = (props: Props) => {
   );
 };
 
-export default AuthLayout;
+export default AccountLayout;

@@ -1,21 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Components
-import AuthLayout from "./layouts/AuthLayout";
-import Overview from "./pages/todolist/Overview";
-import Login from "./pages/auth/Login";
-import Signup from "./pages/auth/Signup";
+import AccountLayout from "./layouts/AccountLayout";
+import Overview from "./routes/todolist/Overview";
+import Login from "./routes/account/Login";
+import Signup from "./routes/account/Signup";
 import TodoLayout from "./layouts/TodoLayout";
-import Profile from "./pages/profile/Profile";
-import SingleTodolist from "./pages/todolist/SingleTodolist";
-import EditProfile from "./pages/profile/EditProfile";
-import Friends from './pages/Friends'
+import Profile from "./routes/profile/Profile";
+import SingleTodolist from "./routes/todolist/SingleTodolist";
+import EditProfile from "./routes/profile/EditProfile";
+import Friends from './routes/Friends'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AuthLayout />}>
+        <Route path="/" element={<AccountLayout />}>
           <Route path="signup" element={<Signup />} />
           <Route path="login" element={<Login />} />
         </Route>

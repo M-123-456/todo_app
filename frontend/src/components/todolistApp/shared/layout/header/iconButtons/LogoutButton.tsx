@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { HiLogout } from "react-icons/hi";
 
-import IconButton from './IconButton'
+import IconButton from '../../../../../shared/buttons/IconButton'
 
 
 type Props = {}

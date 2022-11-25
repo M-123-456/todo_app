@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react' 
 import { Link, useNavigate } from "react-router-dom";
-import AccountInput from "../../components/forms/AccountInput";
+import AccountInput from "../../components/userAccount/AccountInput";
 import { IAccountInput } from '../../types'
 import useStore from '../../store'
-import Loading from '../../components/Loading';
+import Loading from '../../components/shared/Loading';
 
 
 type Props = {};

@@ -1,4 +1,4 @@
-import TodoItem from "../../components/listItem/TodoItem";
+import TodoItem from "../../components/todolistApp/singleTodolist/TodoItem";
 import useStore from "../../store";
 
 type Props = {};

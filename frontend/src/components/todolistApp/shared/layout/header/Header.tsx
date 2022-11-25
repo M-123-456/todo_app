@@ -3,11 +3,9 @@ import { AiFillEdit } from "react-icons/ai";
 import { GrSave } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
-import IconButton from "../components/ui/buttons/IconButton";
-import FriendsButton from "../components/ui/buttons/FriendsButton";
-import ProfileButton from "../components/ui/buttons/ProfileButton";
-import LogoutButton from "../components/ui/buttons/LogoutButton";
-import BackButton from "../components/ui/buttons/BackButton";
+import IconButton from "../../../../shared/buttons/IconButton";
+
+import BackButton from "../../layout/header/iconButtons/BackButton";
 
 type Props = {
   showBackButton?: boolean

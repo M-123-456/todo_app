@@ -1,9 +1,8 @@
-import OverviewItem from "../../components/listItem/OverviewItem";
-import BackButton from "../../components/ui/buttons/BackButton";
-import FriendsButton from "../../components/ui/buttons/FriendsButton";
-import LogoutButton from "../../components/ui/buttons/LogoutButton";
-import ProfileButton from "../../components/ui/buttons/ProfileButton";
-import Header from '../../layouts/Header'
+import OverviewItem from "../../components/todolistApp/overview/OverviewItem";
+import FriendsButton from "../../components/todolistApp/shared/layout/header/iconButtons/FriendsButton";
+import LogoutButton from "../../components/todolistApp/shared/layout/header/iconButtons/LogoutButton";
+import ProfileButton from "../../components/todolistApp/shared/layout/header/iconButtons/ProfileButton";
+import Header from '../../components/todolistApp/shared/layout/header/Header'
 
 type Props = {};
 

@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Components
-import AccountLayout from "./layouts/AccountLayout";
-import Overview from "./routes/todolist/Overview";
-import Login from "./routes/account/Login";
-import Signup from "./routes/account/Signup";
-import TodoLayout from "./layouts/TodoLayout";
-import Profile from "./routes/profile/Profile";
-import SingleTodolist from "./routes/todolist/SingleTodolist";
-import EditProfile from "./routes/profile/EditProfile";
-import Friends from './routes/Friends'
+import AccountLayout from "../src/components/userAccount/AccountLayout";
+import Overview from "./routes/todolistApp/Overview";
+import Login from "./routes/userAccount/Login";
+import Signup from "./routes/userAccount/Signup";
+import TodoLayout from "./components/todolistApp/shared/layout/AppLayout";
+import Profile from "./routes/todolistApp/profile/Profile";
+import SingleTodolist from "./routes/todolistApp/SingleTodolist"
+import EditProfile from "./routes/todolistApp/profile/EditProfile";
+import Friends from './routes/todolistApp/Friends'
 import { UserCheckIn } from './store'
 import NotFound from "./routes/NotFound";
 

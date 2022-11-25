@@ -1,4 +1,4 @@
-import BaseLayout from '../layouts/BaseLayout'
+import BaseLayout from '../components/shared/BaseLayout'
 
 
 const NotFound = () => {

@@ -1,6 +1,6 @@
-import BaseLayout from "./BaseLayout";
+import BaseLayout from "../../../shared/BaseLayout";
 import { Outlet, useLocation } from "react-router-dom";
-import useStore from "../store";
+import useStore from "../../../../store";
 
 type Props = {};
 

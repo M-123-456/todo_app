@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { IoIosArrowForward, IoIosArrowDown } from 'react-icons/io'
-import Search from '../components/forms/Search'
-import CurrentFriends from '../components/friends/CurrentFriends'
-import FriendsSearch from '../components/friends/search/FriendsSearch'
-import Requests from '../components/friends/requests/Requests'
+import FriendsSearch from '../../../src/components/todolistApp/friends/search/FriendsSearch'
+import CurrentFriends from '../../../src/components/todolistApp/friends/CurrentFriends'
+import SearchResults from '../../../src/components/todolistApp/friends/search/SearchResults'
+import Requests from '../../../src/components/todolistApp/friends/requests/Requests'
 
 type Props = {}
 
@@ -15,14 +15,14 @@ const Friends = (props: Props) => {
   return (
       <div className="flex flex-col py-8 mt-6 lg:py-0 w-full">
         {/* search bar */}
-        <Search 
+        <FriendsSearch 
           className="self-center bg-white px-2 py-1 shadow drop-shadow-xl"
           searchInput={searchInput}
           setSearchInput={setSearchInput}
         />
         {
           searchInput !== '' && 
-          <FriendsSearch 
+          <SearchResults 
             searchInput={searchInput}
           />
         }

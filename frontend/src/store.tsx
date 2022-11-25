@@ -9,7 +9,7 @@ import { getErrorArrays } from './utils/storeErrors'
 import { IUser, IAccountInput } from './types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Loading from './components/Loading'
+import Loading from './components/shared/Loading'
 
 interface IUseStore {
     user: IUser | null;

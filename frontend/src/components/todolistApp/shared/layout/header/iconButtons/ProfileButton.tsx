@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { BsPersonCircle } from "react-icons/bs";
-import IconButton from './IconButton';
+import IconButton from '../../../../../shared/buttons/IconButton';
 
 type Props = {}
 

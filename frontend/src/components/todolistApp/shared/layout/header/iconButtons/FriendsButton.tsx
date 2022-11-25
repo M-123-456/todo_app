@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { FaUserFriends } from 'react-icons/fa'
-import IconButton from './IconButton'
+import IconButton from '../../../../../shared/buttons/IconButton'
 IconButton
 
 type Props = {}

@@ -1,4 +1,4 @@
-import BaseLayout from '../layouts/BaseLayout'
+import BaseLayout from './BaseLayout'
 
 const Loading = () => {
   return (

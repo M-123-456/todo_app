@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import useStore from "../store";
-import BaseLayout from "./BaseLayout";
+import useStore from "../../store";
+import BaseLayout from "../shared/BaseLayout";
 
 type Props = {};
 

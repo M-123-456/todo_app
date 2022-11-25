@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import AccountInput from "../../components/forms/AccountInput";
-import Loading from "../../components/Loading";
+import AccountInput from "../../components/userAccount/AccountInput";
+import Loading from "../../components/shared/Loading";
 import useStore from '../../store'
 import { IAccountInput } from '../../types'
 

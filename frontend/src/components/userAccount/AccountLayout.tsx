@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import useStore from "../../store";
+import useUserAccount from "../../store";
 import BaseLayout from "../shared/BaseLayout";
 
 type Props = {};
 
 const AccountLayout = (props: Props) => {
   const navigate = useNavigate()
-  const user = useStore(state => state.user)
-  const isLoggedIn = useStore(state => state.isLoggedIn)
-  const getUser = useStore(state => state.getUser)
+  const user = useUserAccount(state => state.user)
+  const isLoggedIn = useUserAccount(state => state.isLoggedIn)
+  const getUser = useUserAccount(state => state.getUser)
 
   console.log(isLoggedIn, user)
 

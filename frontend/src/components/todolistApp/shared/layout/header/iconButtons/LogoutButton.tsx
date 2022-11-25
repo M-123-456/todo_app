@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { HiLogout } from "react-icons/hi";
 
 import IconButton from '../../../../../shared/buttons/IconButton'
-import useStore from '../../../../../../store';
+import useUserAccount from '../../../../../../store';
 
 const LogoutButton = () => {
   const navigate = useNavigate()
-  const logout = useStore(state => state.logout)
+  const logout = useUserAccount(state => state.logout)
 
   const handleLogout = () => {
     logout()

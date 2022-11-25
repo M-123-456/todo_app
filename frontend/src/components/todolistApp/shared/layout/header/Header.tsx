@@ -4,7 +4,6 @@ import ProfileButton from "./iconButtons/ProfileButton";
 import LogoutButton from "./iconButtons/LogoutButton";
 import AddListButton from "./iconButtons/AddListButton";
 import ProfileEditButton from "./iconButtons/ProfileEditButton";
-import SaveButton from "./iconButtons/SaveButton";
 
 type Props = {
   showBackButton?: boolean
@@ -13,7 +12,7 @@ type Props = {
 
 type IconNode = {
   label: string,
-  node: React.ReactNode
+  node: React.ReactNode | JSX.Element | undefined
 }
 
 const iconNodes: IconNode[] = [
@@ -40,10 +39,6 @@ const iconNodes: IconNode[] = [
   {
     label: 'addTodo',
     node: <AddListButton />
-  },
-  {
-    label: 'save',
-    node: <SaveButton />
   },
 ]
 

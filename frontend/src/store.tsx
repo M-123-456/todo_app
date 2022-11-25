@@ -26,7 +26,7 @@ interface IUseStore {
     logout: () => void;
 }
 
-const useStore = create<IUseStore>((set, get) => ({
+const useUserAccount = create<IUseStore>((set, get) => ({
     /** global variable for login user */
     user: null,
     setUser: (loginUser) => {
@@ -122,10 +122,10 @@ const useStore = create<IUseStore>((set, get) => ({
 /** Component to call check login user */
 export function UserCheckIn () {
     const navigate = useNavigate()
-    const user = useStore(state => state.user)
-    const loading = useStore(state => state.loading)
-    const isLoggedIn = useStore(state => state.isLoggedIn)
-    const getUser = useStore(state => state.getUser)
+    const user = useUserAccount(state => state.user)
+    const loading = useUserAccount(state => state.loading)
+    const isLoggedIn = useUserAccount(state => state.isLoggedIn)
+    const getUser = useUserAccount(state => state.getUser)
     useEffect(() => {
         if (!isLoggedIn) getUser()
     }, [])
@@ -146,4 +146,4 @@ export function UserCheckIn () {
 }
 
 
-export default useStore
+export default useUserAccount

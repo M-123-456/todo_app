@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 
 import AccountInput from "../../components/userAccount/AccountInput";
 import Loading from "../../components/shared/Loading";
-import useStore from '../../store'
+import useUserAccount from '../../store'
 import { IAccountInput } from '../../types'
 
 type Props = {};
 
 const Signup = (props: Props) => {
-  const loading = useStore(state => state.loading)
-  const errors = useStore(state => state.errors)
-  const signup = useStore(state => state.signup)
+  const loading = useUserAccount(state => state.loading)
+  const errors = useUserAccount(state => state.errors)
+  const signup = useUserAccount(state => state.signup)
   const [inputData, setInputData] = useState<IAccountInput>({
     username:'',
     email: '',

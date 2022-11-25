@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/userAccount/AccountInput";
 import { IAccountInput } from '../../types'
-import useStore from '../../store'
+import useUserAccount from '../../store'
 import Loading from '../../components/shared/Loading';
 
 
@@ -14,11 +14,11 @@ const Login = (props: Props) => {
     email: '',
     password: ''
   })
-  const user = useStore(state => state.user)
-  const setUser = useStore(state => state.setUser)
-  const login = useStore(state => state.login)
-  const loading = useStore(state => state.loading)
-  const errors = useStore(state => state.errors)
+  const user = useUserAccount(state => state.user)
+  const setUser = useUserAccount(state => state.setUser)
+  const login = useUserAccount(state => state.login)
+  const loading = useUserAccount(state => state.loading)
+  const errors = useUserAccount(state => state.errors)
 
 
   const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {

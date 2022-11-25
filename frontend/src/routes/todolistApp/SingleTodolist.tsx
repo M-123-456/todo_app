@@ -1,6 +1,6 @@
 import Header from "../../components/todolistApp/shared/layout/header/Header";
 import TodoItem from "../../components/todolistApp/singleTodolist/TodoItem";
-import useStore from "../../store";
+import useUserAccount from "../../store";
 
 type Props = {};
 
@@ -32,7 +32,7 @@ const icons = [
 ]
 
 const SingleTodolist = (props: Props) => {
-  const user = useStore(state => state.user)
+  const user = useUserAccount(state => state.user)
   console.log(user)
 
   return (

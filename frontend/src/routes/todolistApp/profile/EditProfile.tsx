@@ -14,6 +14,7 @@ const icons = [
 
 const EditProfile = (props: Props) => {
   const user = useUserAccount(state => state.user)
+  const deleteAccount = useUserAccount(state => state.deleteAccount)
   const [username, setUsername] = useState(user?.username)
   const [email, setEmail] = useState(user?.email)
   const [password, setPassword] = useState('')
@@ -134,6 +135,7 @@ const EditProfile = (props: Props) => {
             </button>
             <button
               className="mt-2 self-center bg-red-500 py-2 px-3 rounded-full text-white w-40 hover:scale-110 ease-in duration-200"
+              onClick={() => deleteAccount()}
             >
               Delete Account
             </button>

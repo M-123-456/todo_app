@@ -24,6 +24,7 @@ interface IUseStore {
     signup: (input: IAccountInput) => void;
     login: (input: Omit<IAccountInput, 'username'>) => void;
     logout: () => void;
+    deleteAccount: () => void
 }
 
 const useUserAccount = create<IUseStore>((set, get) => ({
@@ -114,6 +115,11 @@ const useUserAccount = create<IUseStore>((set, get) => ({
     },
     logout: async() => {
         await accountApi.logout()
+        get().setUser(null)
+    },
+    deleteAccount: async() => {
+        await accountApi.delete()
+        get().setIsLoggedIn(false)
         get().setUser(null)
     }
 }))

@@ -4,8 +4,13 @@ import FriendsSearch from '../../../src/components/todolistApp/friends/search/Fr
 import CurrentFriends from '../../../src/components/todolistApp/friends/CurrentFriends'
 import SearchResults from '../../../src/components/todolistApp/friends/search/SearchResults'
 import Requests from '../../../src/components/todolistApp/friends/requests/Requests'
+import Header from '../../components/todolistApp/shared/layout/header/Header'
 
 type Props = {}
+
+const icons = [
+  'profile', 'logout'
+]
 
 const Friends = (props: Props) => {
   const [showFriends, setShowFriends] = useState(false)
@@ -13,6 +18,11 @@ const Friends = (props: Props) => {
   const [searchInput, setSearchInput] = useState('')
 
   return (
+    <>
+      <Header
+        showBackButton={true}
+        icons={icons} 
+      />
       <div className="flex flex-col py-8 mt-6 lg:py-0 w-full">
         {/* search bar */}
         <FriendsSearch 
@@ -52,6 +62,8 @@ const Friends = (props: Props) => {
           { showRequests && <Requests /> }
         </ul>
       </div>
+    </>
+      
   )
 }
 

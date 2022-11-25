@@ -1,28 +1,54 @@
-import { BsPlusCircle } from "react-icons/bs";
-import { AiFillEdit } from "react-icons/ai";
-import { GrSave } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
-
-import IconButton from "../../../../shared/buttons/IconButton";
-
 import BackButton from "../../layout/header/iconButtons/BackButton";
+import FriendsButton from "./iconButtons/FriendsButton";
+import ProfileButton from "./iconButtons/ProfileButton";
+import LogoutButton from "./iconButtons/LogoutButton";
+import AddListButton from "./iconButtons/AddListButton";
+import ProfileEditButton from "./iconButtons/ProfileEditButton";
+import SaveButton from "./iconButtons/SaveButton";
 
 type Props = {
   showBackButton?: boolean
-  icons: React.ReactNode[]
+  icons: string[]
 };
 
+type IconNode = {
+  label: string,
+  node: React.ReactNode
+}
+
+const iconNodes: IconNode[] = [
+  {
+    label: 'friends',
+    node: <FriendsButton />
+  },
+  {
+    label: 'profile',
+    node: <ProfileButton />
+  },
+  {
+    label: 'profileEdit',
+    node: <ProfileEditButton />
+  },
+  {
+    label: 'logout',
+    node: <LogoutButton />
+  },
+  {
+    label: 'addList',
+    node: <AddListButton />
+  },
+  {
+    label: 'addTodo',
+    node: <AddListButton />
+  },
+  {
+    label: 'save',
+    node: <SaveButton />
+  },
+]
+
+
 const Header: React.FC<Props> = (props) => {
-  // const navigate = useNavigate();
-
-
-  // const handleGoToEdit = () => {
-  //   navigate("/profile/edit");
-  // };
-
-  const handleSave = () => {
-    
-  }
 
   return (
     <div className="flex justify-between items-center space-x-3">
@@ -32,101 +58,18 @@ const Header: React.FC<Props> = (props) => {
       }
       <div className="flex items-center ml-auto space-x-3">
         {
-          props.icons.map(icon => (
-            <>
-              {icon}
-            </>
-          ))
+          props.icons.map(icon => {
+            const matchedIcon = iconNodes.find(node => node.label === icon)
+            return (
+              <>
+                {matchedIcon?.node}
+              </>
+            )
+          })
         }
       </div>
     </div>
   )
-
-
-
-  // location = overview => show icons on right side (plus, user, logout)
-    // return (
-    //   <div className="flex items-center ml-auto space-x-3">
-    //     <IconButton size="text-2xl md:text-3xl">
-    //       <BsPlusCircle />
-    //     </IconButton>
-    //     <ProfileButton />
-    //     <FriendsButton />
-    //     <LogoutButton />
-    //   </div>
-    // );
-  // // location  = profile => show back button on left and icons on right side (edit, logout)
-  //   return (
-  //     <div className="flex justify-between items-center space-x-3">
-  //       <BackButton />
-  //       <div className="flex items-center ml-auto space-x-3">
-  //         <IconButton size="text-2xl md:text-3xl">
-  //           <AiFillEdit />
-  //         </IconButton>
-  //         <FriendsButton />
-  //         <LogoutButton />
-  //       </div>
-  //     </div>
-  //   );
-  // location  = profile/edit => show back button on left and icons on right side (save, logout)
-  // else if (location === "/profile/edit") {
-  //   return (
-  //     <div className="flex justify-between items-center space-x-3">
-  //       <BackButton />
-  //       <div className="flex items-center ml-auto space-x-3">
-  //         <IconButton size="text-2xl md:text-3xl" onClick={handleSave}>
-  //           <GrSave />
-  //         </IconButton>
-  //         <FriendsButton />
-  //         <LogoutButton />
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // location  = friends => show back button on left and icons on right side (save, logout)
-  // else if (location === "/friends") {
-  //   return (
-  //     <div className="flex justify-between items-center space-x-3">
-  //       <BackButton />
-  //       <div className="flex items-center ml-auto space-x-3">
-  //         <ProfileButton />
-  //         <LogoutButton />
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // location  = todolist => show back button on left side and icons on right side (plus, user, logout)
-  // else {
-  //   return (
-  //     <div className="flex justify-between items-center space-x-3">
-  //       <BackButton />
-  //       <div className="flex items-center ml-auto space-x-3">
-  //         <IconButton size="text-2xl md:text-3xl">
-  //           <BsPlusCircle />
-  //         </IconButton>
-  //         <ProfileButton />
-  //         <FriendsButton />
-  //         <LogoutButton />
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // return (
-  //   <div className="flex justify-between items-center space-x-3">
-  //       <BackButton />
-  //       <div className="flex items-center ml-auto space-x-3">
-  //         <IconButton size="text-2xl md:text-3xl">
-  //           <BsPlusCircle />
-  //         </IconButton>
-  //         <ProfileButton />
-  //         <FriendsButton />
-  //         <LogoutButton />
-  //       </div>
-  //     </div>
-  // )
-};
+}
 
 export default Header;

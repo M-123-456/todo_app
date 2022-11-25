@@ -3,9 +3,8 @@ import { FaUserFriends } from 'react-icons/fa'
 import IconButton from '../../../../../shared/buttons/IconButton'
 IconButton
 
-type Props = {}
 
-const FriendsButton = (props: Props) => {
+const FriendsButton = () => {
   const navigate = useNavigate()
   const handleGoToFriends = () => {
     navigate('/friends', {replace: true})

@@ -1,47 +1,59 @@
+import Header from "../../../components/todolistApp/shared/layout/header/Header";
 
 type Props = {};
 
+const icons = [
+  'save', 'friends', 'logout'
+]
+
 const EditProfile = (props: Props) => {
   return (
-    <div className="flex justify-center py-8 mt-6 lg:py-0 w-full">
+    <>
+      <Header 
+        showBackButton={true}
+        icons={icons}
+      />
+      <div className="flex justify-center py-8 mt-6 lg:py-0 w-full">
 
-      {/* Profile Card */}
-      <div
-        className="bg-white py-3 px-6 w-3/4 md:w-1/2"
-        area-label="profile-card"
-      >
-        {/* avatar */}
-        <div 
-          area-label="avatar"
-          className="flex justify-center py-3"
+        {/* Profile Card */}
+        <div
+          className="bg-white py-3 px-6 w-3/4 md:w-1/2"
+          area-label="profile-card"
         >
-          <img src="" alt="" />
-          avatar
-        </div>
-
-        <hr />
-
-        {/* user info */}
-        <div          
-          area-label="user_info"
-          className="mt-4 space-y-3"
-        >
-          <p
-            area-label="username"
-            className="text-center font-semibold"
+          {/* avatar */}
+          <div 
+            area-label="avatar"
+            className="flex justify-center py-3"
           >
-            Username
-          </p>
-          <p
-            area-label="email"
-            className="text-center"
+            <img src="" alt="" />
+            avatar
+          </div>
+
+          <hr />
+
+          {/* user info */}
+          <div          
+            area-label="user_info"
+            className="mt-4 space-y-3"
           >
-            email@example.com
-          </p>
-        </div>
+            <p
+              area-label="username"
+              className="text-center font-semibold"
+            >
+              Username
+            </p>
+            <p
+              area-label="email"
+              className="text-center"
+            >
+              email@example.com
+            </p>
+          </div>
         </div>
       {/* Profile Card End */}
     </div>
+    </>
+    
   );
 };
 

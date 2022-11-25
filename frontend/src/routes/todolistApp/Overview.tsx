@@ -26,7 +26,7 @@ const DUMMY_TODOLIST = [
 ];
 
 const icons = [
-  <ProfileButton />, <FriendsButton />, <LogoutButton />
+  'addList', 'profile', 'friends', 'logout'
 ]
 
 const Overview = (props: Props) => {

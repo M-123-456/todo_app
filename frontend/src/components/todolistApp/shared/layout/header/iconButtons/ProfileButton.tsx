@@ -2,9 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { BsPersonCircle } from "react-icons/bs";
 import IconButton from '../../../../../shared/buttons/IconButton';
 
-type Props = {}
 
-const ProfileButton = (props: Props) => {
+const ProfileButton = () => {
   const navigate = useNavigate()
 
   const handleGoToProfile = () => {

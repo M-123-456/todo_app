@@ -4,9 +4,8 @@ import { HiLogout } from "react-icons/hi";
 import IconButton from '../../../../../shared/buttons/IconButton'
 
 
-type Props = {}
 
-const LogoutButton = (props: Props) => {
+const LogoutButton = () => {
   const navigate = useNavigate()
   const handleLogout = () => {
     navigate('/login', {replace: true})

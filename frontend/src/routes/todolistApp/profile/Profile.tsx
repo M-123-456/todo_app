@@ -1,8 +1,18 @@
+import Header from "../../../components/todolistApp/shared/layout/header/Header";
 
 type Props = {};
 
+const icons = [
+  'profileEdit', 'friends', 'logout'
+]
+
 const Profile = (props: Props) => {
   return (
+    <>
+      <Header 
+        showBackButton={true}
+        icons={icons}
+      />
       <div className="flex justify-center py-8 mt-6 lg:py-0 w-full">
 
       {/* Profile Card */}
@@ -42,6 +52,8 @@ const Profile = (props: Props) => {
         </div>
       {/* Profile Card End */}
     </div>
+    </>
+      
   );
 };
 

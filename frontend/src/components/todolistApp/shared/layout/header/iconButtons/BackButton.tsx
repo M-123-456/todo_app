@@ -3,9 +3,8 @@ import { IoIosArrowBack } from "react-icons/io";
 
 import IconButton from '../../../../../shared/buttons/IconButton'
 
-type Props = {}
 
-const BackButton = (props: Props) => {
+const BackButton = () => {
   const navigate = useNavigate()
 
   const handleBack = () => navigate(-1)

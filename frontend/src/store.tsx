@@ -1,4 +1,3 @@
-import { ReactElement } from 'react'
 import { AxiosResponse } from 'axios'
 import create from 'zustand'
 
@@ -27,7 +26,7 @@ interface IUseStore {
 }
 
 const useStore = create<IUseStore>((set, get) => ({
-    /** global variable for logged in user */
+    /** global variable for login user */
     user: null,
     setUser: (loginUser) => {
         set((state) => ({

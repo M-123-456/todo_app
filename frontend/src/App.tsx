@@ -11,6 +11,7 @@ import SingleTodolist from "./routes/todolist/SingleTodolist";
 import EditProfile from "./routes/profile/EditProfile";
 import Friends from './routes/Friends'
 import { UserCheckIn } from './store'
+import NotFound from "./routes/NotFound";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="profile/edit" element={<EditProfile />} />
               <Route path="friends" element={<Friends />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
       </BrowserRouter>

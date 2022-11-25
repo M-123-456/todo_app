@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState } from 'react' 
 import { Link, useNavigate } from "react-router-dom";
 import AccountInput from "../../components/userAccount/AccountInput";
@@ -10,6 +9,7 @@ import Loading from '../../components/shared/Loading';
 type Props = {};
 
 const Login = (props: Props) => {
+  const navigate = useNavigate()
   const [inputData, setInputData] = useState<Omit<IAccountInput, 'username'>>({
     email: '',
     password: ''
@@ -32,6 +32,9 @@ const Login = (props: Props) => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login(inputData)
+    if (user) {
+      navigate('/')
+    }
   }
 
   if (loading) {

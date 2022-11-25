@@ -10,7 +10,7 @@ router.post('/signup', validations.signup, controller.signup)
 
 router.post('/login', validations.login, controller.login)
 
-router.post('/logout', auth, controller.logout)
+router.get('/logout', auth, controller.logout)
 
 router.delete('/delete', auth, controller.deleteAccount)
 

@@ -13,7 +13,7 @@ import Loading from './components/shared/Loading'
 
 interface IUseStore {
     user: IUser | null;
-    setUser: (loginUser: IUser) => void;
+    setUser: (loginUser: IUser | null) => void;
     getUser: () => void;
     isLoggedIn: boolean;
     setIsLoggedIn: (value:boolean) => void;
@@ -23,6 +23,7 @@ interface IUseStore {
     setErrors: (errors: string[]) => void;
     signup: (input: IAccountInput) => void;
     login: (input: Omit<IAccountInput, 'username'>) => void;
+    logout: () => void;
 }
 
 const useStore = create<IUseStore>((set, get) => ({
@@ -110,6 +111,10 @@ const useStore = create<IUseStore>((set, get) => ({
             get().setIsLoggedIn(false)
             get().setLoading(false)
         } 
+    },
+    logout: async() => {
+        await accountApi.logout()
+        get().setUser(null)
     }
 }))
 
@@ -124,10 +129,11 @@ export function UserCheckIn () {
     useEffect(() => {
         if (!isLoggedIn) getUser()
     }, [])
+
     useEffect(() => {
         if (user) navigate('/', {replace: true})
         else navigate('/login')
-    }, [isLoggedIn])
+    }, [isLoggedIn, user])
 
     if (loading) {
         return (

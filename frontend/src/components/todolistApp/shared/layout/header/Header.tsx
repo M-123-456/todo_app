@@ -3,7 +3,6 @@ import FriendsButton from "./iconButtons/FriendsButton";
 import ProfileButton from "./iconButtons/ProfileButton";
 import LogoutButton from "./iconButtons/LogoutButton";
 import AddListButton from "./iconButtons/AddListButton";
-import ProfileEditButton from "./iconButtons/ProfileEditButton";
 
 type Props = {
   showBackButton?: boolean
@@ -23,10 +22,6 @@ const iconNodes: IconNode[] = [
   {
     label: 'profile',
     node: <ProfileButton />
-  },
-  {
-    label: 'profileEdit',
-    node: <ProfileEditButton />
   },
   {
     label: 'logout',

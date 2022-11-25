@@ -23,6 +23,7 @@ const EditProfile = (props: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
   }
 
   if (user) {
@@ -36,7 +37,7 @@ const EditProfile = (props: Props) => {
 
           {/* Profile Card */}
           <form
-            className="bg-white py-6 px-6 w-3/4 md:w-1/2 flex flex-col gap-2"
+            className="bg-white py-6 px-6 w-full md:w-1/2 flex flex-col gap-2"
             area-label="profile-card"
             onSubmit={handleSubmit}
           >
@@ -72,21 +73,6 @@ const EditProfile = (props: Props) => {
                   className="text-center w-full hover:cursor-pointer shadow-lg py-2"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div className="w-full">
-                <label 
-                  htmlFor="email"
-                  className="font-semibold"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  area-label="email"
-                  className="text-center w-full hover:cursor-pointer shadow-lg py-2"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div

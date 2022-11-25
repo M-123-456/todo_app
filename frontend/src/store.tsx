@@ -10,6 +10,7 @@ import { getErrorArrays } from './utils/storeErrors'
 import { IUser, IAccountInput } from './types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Loading from './components/Loading'
 
 interface IUseStore {
     user: IUser | null;
@@ -113,13 +114,12 @@ const useStore = create<IUseStore>((set, get) => ({
     }
 }))
 
-type Props = {
-    children: ReactElement
-}
 
-export function StoreProvider (props:Props) {
+/** Component to call check login user */
+export function UserCheckIn () {
     const navigate = useNavigate()
     const user = useStore(state => state.user)
+    const loading = useStore(state => state.loading)
     const isLoggedIn = useStore(state => state.isLoggedIn)
     const getUser = useStore(state => state.getUser)
     useEffect(() => {
@@ -127,11 +127,16 @@ export function StoreProvider (props:Props) {
     }, [])
     useEffect(() => {
         if (user) navigate('/', {replace: true})
+        else navigate('/login')
     }, [isLoggedIn])
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
     return (
-        <div>
-            {props.children}
-        </div>
+        <div></div>
     )
 }
 

@@ -10,14 +10,14 @@ import Profile from "./routes/profile/Profile";
 import SingleTodolist from "./routes/todolist/SingleTodolist";
 import EditProfile from "./routes/profile/EditProfile";
 import Friends from './routes/Friends'
-import { StoreProvider } from './store'
+import { UserCheckIn } from './store'
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
-        <StoreProvider>
+        <UserCheckIn />
           <Routes>
             <Route path="/" element={<AccountLayout />}>
               <Route path="signup" element={<Signup />} />
@@ -31,8 +31,7 @@ function App() {
               <Route path="friends" element={<Friends />} />
             </Route>
           </Routes>
-        </StoreProvider>
-        </BrowserRouter>
+      </BrowserRouter>
     </>
     
   );

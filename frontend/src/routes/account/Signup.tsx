@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import AccountInput from "../../components/forms/AccountInput";
+import Loading from "../../components/Loading";
 import useStore from '../../store'
 import { IAccountInput } from '../../types'
 
@@ -32,9 +33,7 @@ const Signup = (props: Props) => {
 
   if (loading) {
     return (
-      <div className="flex rounded shadow-sm bg-white overflow-hidden justify-center items-center min-h-[30rem]">
-       <div>Loading...</div>
-      </div>
+      <Loading />
     )
   }
 

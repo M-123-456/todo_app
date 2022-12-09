@@ -1,17 +1,19 @@
-# Portfolio Website of Miki Gerlach
+## React Todo App:
+#### 1. Install the project
+    - Move to backend folder and install with `npm install`
+    - Move to frontend folder and execute `npm install`
 
-### Getting Started
+#### 2. Start the project with following command (start from your project root)
+    - Move to backend folder and install with `npm start`
+    - Move to frontend folder and execute `npm run dev`
 
-1. Install the project
-   `npm start`
+#### 3. Purpose of this project
+    I initiated this project to learn fullstack development.
 
-2. Start the project
-   `npm run dev`
+#### 4. What this project is about
+    This is a todolist application, in which people can share their todolists with friends. 
 
-3. Open with your browser
-   Open the project with with your browser [http://localhost:3000](http://localhost:3000)
-
-### This project includes
-
-Docs:
-[tailwind](https://tailwindcss.com/);
+#### 5. This project includes:
+    Doc:
+    - [tailwind](https://tailwindcss.com/docs/guides/create-react-app)
+    - [zustand](https://github.com/pmndrs/zustand)
